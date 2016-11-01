@@ -48,7 +48,7 @@ class AuthStoreClass extends EventEmitter {
         let roles = user.app_metadata.roles;
         let len = roles.length;
         for(var i = 0; i < len; i++){
-          if(roles[i]=="user"){
+          if(roles[i]=='user'){
             return true;
           }
         }

@@ -6,6 +6,7 @@ import Index from './components/Index';
 import EventDetail from './components/EventDetail';
 import NotAuthorized from './components/NotAuthorized';
 import PointDetail from './components/PointDetail';
+import User from './components/Users';
 
 import AuthUtils from './utils/AuthUtils.js';
 
@@ -24,6 +25,7 @@ class Root extends Component {
           <Route path='/notAuthorized' component={NotAuthorized}/>
           <Route path='/events/:id' component={EventDetail} onEnter={AuthUtils.requireAuth}/>
           <Route path='/users/:id/points' component={PointDetail} onEnter={AuthUtils.requireAuth}/>
+          <Route path='/users' component={User} onEnter={AuthUtils.requireAuth}/>
         </Route>
       </Router>
     );

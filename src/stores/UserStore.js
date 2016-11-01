@@ -7,7 +7,7 @@ const CHANGE_EVENT = 'change';
 let _users = [];
 
 function setUsers(users) {
-  _users = user;
+  _users = users;
 }
 
 
@@ -36,19 +36,19 @@ const UserStore = new UserStoreClass();
 // Here we register a callback for the dispatcher
 // and look for our various action types so we can
 // respond appropriately
-PointStore.dispatchToken = AppDispatcher.register(action => {
+UserStore.dispatchToken = AppDispatcher.register(action => {
 
   switch(action.actionType) {
-    case PointConstants.RECIEVE_USERS:
+    case UserConstants.RECIEVE_USERS:
       setUsers(action.users);
       // We need to call emitChange so the event listener
       // knows that a change has been made
-      PointStore.emitChange();
+      UserStore.emitChange();
       break
 
-    case PointConstants.RECIEVE_USERS_ERROR:
+    case UserConstants.RECIEVE_USERS_ERROR:
       alert(action.message);
-      PointStore.emitChange();
+      UserStore.emitChange();
       break
 
     default:
