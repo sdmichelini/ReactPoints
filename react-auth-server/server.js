@@ -5,6 +5,7 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const jwt = require('express-jwt');
+const jwt2 = require('jsonwebtoken');
 const cors = require('cors');
 
 app.use(cors());
@@ -33,12 +34,14 @@ var points = [
   {
     name: "Test User",
     points: 1000,
-    id: 1
+    id: 1,
+    user_id: 1
   },
   {
     name: "Test User 2",
     points: 200,
-    id: 2
+    id: 2,
+    user_id: 2
   }
 ];
 
@@ -114,7 +117,7 @@ app.get('/api/events/:id', authCheck, (req, res) => {
 
 app.get('/api/points', (req, res)=> {
   const allPoints = points.map(point => {
-    return { name: point.name, points: point.points, id: point.id}
+    return { name: point.name, points: point.points, id: point.id, user_id: point.user_id }
   });
   res.json({ points: allPoints, message:"Success!" });
 });
@@ -129,6 +132,11 @@ app.get('/api/users/:user_id/points', (req, res) => {
     const userPoints = all_point_items.filter(point_item => point_item.user_id=== user_id);
     res.json({ user: user[0], items: userPoints});
   }
+});
+
+app.get('/api/auth', authCheck,(req, res) => {
+  console.log(req.user);
+  res.json({message:"Hi"});
 });
 
 app.listen(3001);

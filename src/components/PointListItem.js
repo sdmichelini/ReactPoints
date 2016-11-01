@@ -8,7 +8,7 @@ class PointListItem extends Component {
     return (
       <ListGroupItem>
         <h4>
-          <Link to={'#'}>
+          <Link to={'/users/'+point.user_id+'/points'}>
             {point.name}:
           </Link>
           <div className='pull-right'>{point.points}</div>
