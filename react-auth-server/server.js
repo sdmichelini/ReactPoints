@@ -7,8 +7,12 @@ const app = express();
 const jwt = require('express-jwt');
 const jwt2 = require('jsonwebtoken');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 
 app.use(cors());
+
+// create application/json parser
+const jsonParser = bodyParser.json();
 
 // Authentication middleware provided by express-jwt.
 // This middleware will check incoming requests for a valid
@@ -104,6 +108,10 @@ var point_items = [
   }
 ];
 
+const ALLOWED_CLIENTS = [
+  'auth0|5813aac8f1413bed0950e515'
+];
+
 app.get('/api/events', (req, res) => {
   const allEvents = events.map(event => {
     return { id: event.id, name: event.name, type: event.type, required: event.required, when: event.when, points_present: event.points_present, points_missed: event.points_missed}
@@ -135,8 +143,20 @@ app.get('/api/users/:user_id/points', (req, res) => {
 });
 
 app.get('/api/auth', authCheck,(req, res) => {
-  console.log(req.user);
-  res.json({message:"Hi"});
+  console.log(req.user.sub);
+  let auth = false;
+  for(let client of ALLOWED_CLIENTS) {
+    if(client === req.user.sub) {
+      auth = true;
+      break;
+    }
+  }
+  if(auth)
+    res.json({message:"Hi"});
+  else {
+    res.status(403);
+    res.json({error:"Client not allowed to access resource."});
+  }
 });
 
 app.listen(3001);
