@@ -5,7 +5,6 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const jwt = require('express-jwt');
-const jwt2 = require('jsonwebtoken');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
@@ -152,7 +151,7 @@ app.get('/api/auth', authCheck,(req, res) => {
     }
   }
   if(auth)
-    res.json({message:"Hi"});
+    res.json({message:"Token",token:process.env.AUTH0_TOKEN});
   else {
     res.status(403);
     res.json({error:"Client not allowed to access resource."});

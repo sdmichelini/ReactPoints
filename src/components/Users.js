@@ -21,7 +21,7 @@ class UserComponent extends Component {
   constructor() {
     super();
     this.state = {
-      user:[]
+      users:[]
     }
 
     this.onChange = this.onChange.bind(this);
@@ -41,7 +41,7 @@ class UserComponent extends Component {
 
   onChange() {
     this.setState({
-      user: UserStore.getUsers()
+      users: UserStore.getUsers()
     });
   }
 
@@ -49,7 +49,8 @@ class UserComponent extends Component {
     let userListItems;
     if (this.state.users) {
       // Map over the contacts and get an element for each of them
-      userListItems = this.state.user.map(user => getUserListItem(user));
+      console.log(this.state.users);
+      userListItems = this.state.users.map(user => getUserListItem(user));
     }
     return (
       <div>

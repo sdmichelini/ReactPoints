@@ -6,11 +6,20 @@ export default {
 
   recieveUsers: () => {
     UsersAPI
-      .getUsers('http://localhost:3001/api/auth')
-      .then(users => {
-        AppDispatcher.dispatch({
-          actionType: UserConstants.RECIEVE_USERS,
-          users: users
+      .getToken('http://localhost:3001/api/auth')
+      .then(response => {
+        UsersAPI.getUsers('https://tkezm.auth0.com/api/v2/users',response.token)
+        .then(users => {
+          AppDispatcher.dispatch({
+            actionType: UserConstants.RECIEVE_USERS,
+            users: users
+          });
+        })
+        .catch(message => {
+          AppDispatcher.dispatch({
+            actionType: UserConstants.RECIEVE_USERS_ERROR,
+            message: message
+          });
         });
       })
       .catch(message => {
