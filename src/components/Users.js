@@ -7,14 +7,26 @@ import  UserActions  from '../actions/UserActions';
 import UserListItem  from './UserListItem';
 
 function getUserListItem(user) {
-  console.log(user);
+  let is_user = false;
+  if(user.app_metadata && user.app_metadata.roles) {
+    for(let role of user.app_metadata.roles) {
+      if(role == 'user') {
+        is_user = true;
+        break;
+      }
+    }
+  }
   return (
     <UserListItem
       key={user.user_id}
       user={user}
+      is={is_user}
     />
   );
 }
+
+const helpMessage = `Add and remove users of the application to the points system. They must be a user in order 
+to add them to the site.`;
 
 class UserComponent extends Component {
 
@@ -54,10 +66,14 @@ class UserComponent extends Component {
     }
     return (
       <div>
-        <h2>Points</h2>
+        <h2>Points System Users</h2>
+        <p className='text-muted'>
+          {helpMessage}
+        </p>
         <ListGroup>
           {userListItems}
         </ListGroup>
+        <button className='btn btn-primary'>Submit Users</button>
       </div>
     );
   }
