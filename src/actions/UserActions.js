@@ -36,6 +36,29 @@ export default {
       user_id: user_id,
       status: status
     });
+  },
+
+  updateUserStatus: (user_id, status) => {
+    UsersAPI
+      .getToken('http://localhost:3001/api/auth')
+      .then(response => {
+        UsersAPI.updateUser('https://tkezm.auth0.com/api/v2/users',status,response.token)
+        .then(users => {
+          
+        })
+        .catch(message => {
+          AppDispatcher.dispatch({
+            actionType: UserConstants.RECIEVE_USERS_ERROR,
+            message: message
+          });
+        });
+      })
+      .catch(message => {
+        AppDispatcher.dispatch({
+          actionType: UserConstants.RECIEVE_USERS_ERROR,
+          message: message
+        });
+      });
   }
 
 }
