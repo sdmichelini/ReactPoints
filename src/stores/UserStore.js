@@ -75,17 +75,29 @@ UserStore.dispatchToken = AppDispatcher.register(action => {
           if(!users[i].app_metadata.roles) {
             users[i].app_metadata.roles = [];
           }
-          console.log(users[i].app_metadata.roles);
           if (status) {
             users[i].app_metadata.roles.push('user');
           } else {
             users[i].app_metadata.roles = removeTag(users[i].app_metadata.roles,'user');
           }
-          console.log(users[i].app_metadata.roles);
+          if(!users[i].is_changed) {
+            users[i].is_changed = true;
+          } else {
+            users[i].is_changed = false;
+          }
           break;
         }
       }
       setUsers(users);
+      UserStore.emitChange();
+      break
+    case UserConstants.SUBMIT_USERS_STATUS_ERROR:
+      alert(action.message);
+      UserStore.emitChange();
+      break
+
+    case UserConstants.SUBMIT_USERS_STATUS:
+      alert('Auth0 Updated');
       UserStore.emitChange();
       break
 

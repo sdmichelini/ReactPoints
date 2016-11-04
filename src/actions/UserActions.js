@@ -38,13 +38,42 @@ export default {
     });
   },
 
-  updateUserStatus: (user_id, status) => {
+  updateUsersStatus: (users) => {
     UsersAPI
       .getToken('http://localhost:3001/api/auth')
       .then(response => {
-        UsersAPI.updateUser('https://tkezm.auth0.com/api/v2/users',status,response.token)
+        for(let user of users) {
+          if(user.is_changed) {
+            UsersAPI.updateUser('https://tkezm.auth0.com/api/v2/users', user.user_id, user.app_metadata.roles,response.token)
+            .then(response => {
+              AppDispatcher.dispatch({
+                actionType: UserConstants.SUBMIT_USERS_STATUS
+              });
+            })
+            .catch(message => {
+              AppDispatcher.dispatch({
+                actionType: UserConstants.SUBMIT_USERS_STATUS_ERROR,
+                message: message
+              });
+            });
+          }
+        }
+      })
+      .catch(message => {
+        AppDispatcher.dispatch({
+          actionType: UserConstants.SUBMIT_USERS_STATUS_ERROR,
+          message: message
+        });
+      });
+  },
+
+  updateUserStatus: (user_id, roles) => {
+    UsersAPI
+      .getToken('http://localhost:3001/api/auth')
+      .then(response => {
+        UsersAPI.updateUser('https://tkezm.auth0.com/api/v2/users', user_id, roles,response.token)
         .then(users => {
-          
+
         })
         .catch(message => {
           AppDispatcher.dispatch({

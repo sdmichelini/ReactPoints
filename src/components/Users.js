@@ -25,7 +25,7 @@ function getUserListItem(user) {
   );
 }
 
-const helpMessage = `Add and remove users of the application to the points system. They must be a user in order 
+const helpMessage = `Add and remove users of the application to the points system. They must be a user in order
 to add them to the site.`;
 
 class UserComponent extends Component {
@@ -57,6 +57,13 @@ class UserComponent extends Component {
     });
   }
 
+  onSubmit() {
+    if(this.state.users) {
+      const users = this.state.users;
+      UserActions.updateUsersStatus(users);
+    }
+  }
+
   render() {
     let userListItems;
     if (this.state.users) {
@@ -73,7 +80,7 @@ class UserComponent extends Component {
         <ListGroup>
           {userListItems}
         </ListGroup>
-        <button className='btn btn-primary'>Submit Users</button>
+        <button className='btn btn-primary' onClick={this.onSubmit.bind(this)}>Submit Users</button>
       </div>
     );
   }

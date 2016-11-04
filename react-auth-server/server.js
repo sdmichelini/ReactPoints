@@ -142,7 +142,6 @@ app.get('/api/users/:user_id/points', (req, res) => {
 });
 
 app.get('/api/auth', authCheck,(req, res) => {
-  console.log(req.user.sub);
   let auth = false;
   for(let client of ALLOWED_CLIENTS) {
     if(client === req.user.sub) {
