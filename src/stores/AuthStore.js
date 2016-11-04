@@ -58,6 +58,24 @@ class AuthStoreClass extends EventEmitter {
     return false;
   }
 
+  isAdmin() {
+    if (localStorage.getItem('id_token')) {
+      let user = localStorage.getItem('profile');
+      user = JSON.parse(user);
+      if(user && user.app_metadata && user.app_metadata.roles) {
+        let roles = user.app_metadata.roles;
+        let len = roles.length;
+        for(var i = 0; i < len; i++){
+          if(roles[i]=='admin'){
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+    return false;
+  }
+
 
 
   getJwt() {

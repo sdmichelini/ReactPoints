@@ -21,7 +21,9 @@ const authCheck = jwt({
   audience: process.env.AUTH0_CLIENT_ID
 });
 
-var events = [
+let next_event_id = 2;
+
+let events = [
   {
     id: 1,
     name: "Work Party",
@@ -111,6 +113,18 @@ const ALLOWED_CLIENTS = [
   'auth0|5813aac8f1413bed0950e515'
 ];
 
+function checkAdmin(req, res, next) {
+  let auth = false;
+  for(let client of ALLOWED_CLIENTS) {
+    if(client === req.user.sub) {
+      next();
+      break;
+    }
+  }
+  res.status(403);
+  res.json({error:"Client not allowed to access resource."});
+}
+
 app.get('/api/events', (req, res) => {
   const allEvents = events.map(event => {
     return { id: event.id, name: event.name, type: event.type, required: event.required, when: event.when, points_present: event.points_present, points_missed: event.points_missed}
@@ -120,6 +134,15 @@ app.get('/api/events', (req, res) => {
 
 app.get('/api/events/:id', authCheck, (req, res) => {
   res.json(events.filter(event => event.id === parseInt(req.params.id)));
+});
+
+app.post('/api/events', authCheck, checkAdmin, jsonParser, (req, res) => {
+  if(!req.body.name || !req.body.required || !req.body.present || !req.body.missed) {
+    res.status(400);
+    res.json({message:'Invalid Request.'});
+  } else {
+    res.json({message:'Success'});
+  }
 });
 
 app.get('/api/points', (req, res)=> {
@@ -141,20 +164,8 @@ app.get('/api/users/:user_id/points', (req, res) => {
   }
 });
 
-app.get('/api/auth', authCheck,(req, res) => {
-  let auth = false;
-  for(let client of ALLOWED_CLIENTS) {
-    if(client === req.user.sub) {
-      auth = true;
-      break;
-    }
-  }
-  if(auth)
-    res.json({message:"Token",token:process.env.AUTH0_TOKEN});
-  else {
-    res.status(403);
-    res.json({error:"Client not allowed to access resource."});
-  }
+app.get('/api/auth', authCheck, checkAdmin, (req, res) => {
+  res.json({message:"Token",token:process.env.AUTH0_TOKEN});
 });
 
 app.listen(3001);
