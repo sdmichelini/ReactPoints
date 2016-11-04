@@ -31,6 +31,17 @@ class UserStoreClass extends EventEmitter {
 
 }
 
+function removeTag(list, element) {
+  let ret = list;
+  for(let i = 0; i < list.length; i++) {
+    if(list[i]===element) {
+      ret = list.splice(i, 1);
+      break;
+    }
+  }
+  return ret;
+}
+
 const UserStore = new UserStoreClass();
 
 // Here we register a callback for the dispatcher
@@ -49,6 +60,22 @@ UserStore.dispatchToken = AppDispatcher.register(action => {
     case UserConstants.RECIEVE_USERS_ERROR:
       alert(action.message);
       UserStore.emitChange();
+      break
+
+    case UserConstants.SET_USER_STATUS:
+      let user_id = action.user_id;
+      let status = action.user_status;
+      let users = getUsers();
+      for(let i = 0; i < users.length; i++) {
+        if(user_id === user.user_id) {
+          users[i].app_metadata.roles = (status) :
+            users[i].app_metadata.roles.append('user') ?
+            removeTag(users[i].app_metadata.roles,'user');
+          break;
+        }
+      }
+      setUsers(users);
+      UserStore.emitChange()
       break
 
     default:
