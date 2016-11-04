@@ -35,7 +35,7 @@ function removeTag(list, element) {
   let ret = list;
   for(let i = 0; i < list.length; i++) {
     if(list[i]===element) {
-      ret = list.splice(i, 1);
+      ret.splice(i, 1);
       break;
     }
   }
@@ -64,18 +64,29 @@ UserStore.dispatchToken = AppDispatcher.register(action => {
 
     case UserConstants.SET_USER_STATUS:
       let user_id = action.user_id;
-      let status = action.user_status;
-      let users = getUsers();
+      let status = action.status;
+
+      let users = _users;
       for(let i = 0; i < users.length; i++) {
-        if(user_id === user.user_id) {
-          users[i].app_metadata.roles = (status) :
-            users[i].app_metadata.roles.append('user') ?
-            removeTag(users[i].app_metadata.roles,'user');
+        if(user_id === users[i].user_id) {
+          if(!users[i].app_metadata) {
+            users[i].app_metadata = {};
+          }
+          if(!users[i].app_metadata.roles) {
+            users[i].app_metadata.roles = [];
+          }
+          console.log(users[i].app_metadata.roles);
+          if (status) {
+            users[i].app_metadata.roles.push('user');
+          } else {
+            users[i].app_metadata.roles = removeTag(users[i].app_metadata.roles,'user');
+          }
+          console.log(users[i].app_metadata.roles);
           break;
         }
       }
       setUsers(users);
-      UserStore.emitChange()
+      UserStore.emitChange();
       break
 
     default:

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { ListGroupItem } from 'react-bootstrap';
 import { Link } from 'react-router';
 import ListItem from '../styles/List.css';
+import  UserActions  from '../actions/UserActions';
 
 function getButton(status, handler) {
   let cls = (status) ? 'btn btn-danger' : 'btn btn-success';
@@ -14,32 +15,17 @@ function getButton(status, handler) {
 class UserListItem extends Component {
   constructor() {
     super()
-    this.state = {
-      is_user: false
-    }
   }
 
   toggle() {
-    this.setState({
-      is_user: !this.state.is_user
-    });
+    let is_user = !this.props.is;
+    const { user } = this.props;
+    UserActions.toggleUserStatus(user.user_id, is_user);
   }
 
-  componentDidMount() {
-    console.log(this.props.is);
-    this.setState({
-      is_user: this.props.is
-    });
-  }
-
-  componentWillReceiveProps(newProps) {
-    this.setState({
-      is_user: newProps.is_user
-    });
-  }
   render() {
     const { user } = this.props;
-    let is_user = this.state.is_user;
+    let is_user = this.props.is;
     let button = getButton(is_user, this.toggle.bind(this));
     return (
       <div className={ListItem.item+' list-group-item'}>

@@ -28,6 +28,14 @@ export default {
           message: message
         });
       });
+  },
+
+  toggleUserStatus: (user_id, status) => {
+    AppDispatcher.dispatch({
+      actionType: UserConstants.SET_USER_STATUS,
+      user_id: user_id,
+      status: status
+    });
   }
 
 }
