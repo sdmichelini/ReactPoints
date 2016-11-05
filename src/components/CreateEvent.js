@@ -14,15 +14,32 @@ class CreateEventComponent extends Component {
       required: false
     };
     this.handleNameChange = this.handleNameChange.bind(this);
+    this.handlePointForChange = this.handlePointForChange.bind(this);
+    this.handlePointAgainstChange = this.handlePointAgainstChange.bind(this);
+    this.handleRequiredChange = this.handleRequiredChange.bind(this);
   }
   handleNameChange(event) {
     this.setState({
       name: event.target.value
     });
   }
+  handlePointForChange(event) {
+    this.setState({
+      pFor: Number(event.target.value)
+    });
+  }
+  handlePointAgainstChange(event) {
+    this.setState({
+      pAgainst: Number(event.target.value)
+    });
+  }
+  handleRequiredChange(event) {
+
+  }
   render() {
-    console.log(this.state);
     let name = this.state.name || '';
+    let pFor = this.state.pFor || 0;
+    let pAgainst = this.state.pAgainst || 0;
     return (
       <div>
         <h1>Create New Event</h1>
@@ -35,13 +52,18 @@ class CreateEventComponent extends Component {
           </div>
           <div className='form-group'>
             <label htmlFor='pointsMade'>Points for Attendence</label>
-            <input type='number' className='form-control' id='eventPoints' aria-describedby='eventPoints'/>
+            <input type='number' value={pFor} onChange = {this.handlePointForChange} className='form-control' id='eventPoints' min='0' aria-describedby='eventPoints'/>
             <small id='eventPoints' className='form-text text-muted'>Enter points for attending the event.</small>
           </div>
           <div className='form-group'>
             <label htmlFor='pointsMissed'>Points Penalty for Missed</label>
-            <input type='number' className='form-control' id='eventMissed' aria-describedby='eventMissed'/>
+            <input type='number' value={pAgainst} onChange = {this.handlePointAgainstChange}className='form-control' id='eventMissed' min='0' aria-describedby='eventMissed'/>
             <small id='eventMissed' className='form-text text-muted'>Enter point penalty for missing event.</small>
+          </div>
+          <div className='form-group'>
+            <label htmlFor='eventDate'>Date of Event</label>
+            <input type='date' className='form-control' id='eventDate' aria-describedby='eventDate'/>
+            <small id='eventDate' className='form-text text-muted'>Enter date of the event.</small>
           </div>
           <div className="form-check">
             <label className="form-check-label">

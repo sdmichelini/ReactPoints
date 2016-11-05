@@ -153,7 +153,7 @@ app.get('/api/points', (req, res)=> {
 });
 
 app.get('/api/users/:user_id/points', (req, res) => {
-  user_id = parseInt(req.params.user_id);
+  let user_id = parseInt(req.params.user_id);
   const user = all_users.filter(user => user.id === user_id);
   if(user.length < 0){
     res.status(404);
