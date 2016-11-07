@@ -7,6 +7,7 @@ import EventDetail from './components/EventDetail';
 import NotAuthorized from './components/NotAuthorized';
 import PointDetail from './components/PointDetail';
 import CreateEvent from './components/CreateEvent';
+import CreatePointItem from './components/CreatePointItem';
 import User from './components/Users';
 
 import AuthUtils from './utils/AuthUtils.js';
@@ -28,6 +29,7 @@ class Root extends Component {
           <Route path='/users/:id/points' component={PointDetail} onEnter={AuthUtils.requireAuth}/>
           <Route path='/users' component={User} onEnter={AuthUtils.requireAuth}/>
           <Route path='/create/event' component={CreateEvent} onEnter={AuthUtils.requireAdmin}/>
+          <Route path='/create/point' component={CreatePointItem} onEnter={AuthUtils.requireAdmin}/>
         </Route>
       </Router>
     );

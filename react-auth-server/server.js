@@ -50,6 +50,8 @@ var points = [
   }
 ];
 
+let next_point_item = 3;
+
 var all_point_items = [
   {
     id: 1,
@@ -177,6 +179,40 @@ app.get('/api/points', (req, res)=> {
     return { name: point.name, points: point.points, id: point.id, user_id: point.user_id }
   });
   res.json({ points: allPoints, message:"Success!" });
+});
+
+app.post('/api/points', authCheck, checkAdmin, jsonParser, (req, res) => {
+  if(!req.body.user_id) {
+    res.status(400);
+    res.json({message:'Missing user_id.'});
+  } else if(!req.body.event_id) {
+    res.status(400);
+    res.json({message:'Missing event_id'});
+  } else if(!req.body.present) {
+    res.status(400);
+    res.json({message:'Mising present'});
+  } else {
+    _event = events.filter(e => e.id === parseInt(req.body.event_id));
+    if(!_event) {
+      res.status(404);
+      res.json({message:'Event not found.'});
+    } else {
+      let points = (req.body.present) ? _event.points_present : _event.points_missed;
+      let item = {
+        id: next_point_item,
+        user_id: req.body.user_id,
+        _event: {
+          name: _event.name,
+          id: _event.id
+        },
+        points: points
+      };
+      next_point_item = next_point_item + 1;
+      all_point_items.push(item);
+      res.json({message: 'Success', item: item});
+    }
+  }
+
 });
 
 app.get('/api/users/:user_id/points', (req, res) => {
