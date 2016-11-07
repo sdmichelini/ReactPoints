@@ -141,15 +141,34 @@ app.get('/api/events/:id', authCheck, (req, res) => {
 });
 
 app.post('/api/events', authCheck, checkAdmin, jsonParser, (req, res) => {
-  console.log(req.body);
   if(!req.body.name) {
     res.status(400);
-    res.json({message:'Invalid name.'});
+    res.json({message:'Missing name.'});
   } else if(req.body.required===undefined) {
     res.status(400);
-    res.json({message:'Invalid required.'});
-  }else {
-    res.json({message:'Success'});
+    res.json({message:'Missing required parameter.'});
+  } else if(req.body.present === undefined){
+    res.status(400);
+    res.json({message:'Missing points for completion parameter.'});
+  } else if(req.body.missed === undefined){
+    res.status(400);
+    res.json({message:'Missing points for missed parameter.'});
+  } else if(!req.body.date){
+    res.status(400);
+    res.json({message:'Missing date parameter.'});
+  } else {
+    let _event = {
+      id: next_event_id,
+      name: req.body.name,
+      type: 0,
+      required: req.body.required,
+      when: req.body.date,
+      points_present: req.body.present,
+      points_missed: req.body.missed
+    };
+    events.push(_event);
+    next_event_id = next_event_id + 1;
+    res.json({message:'Success', _event:_event});
   }
 });
 

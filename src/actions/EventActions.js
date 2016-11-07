@@ -50,10 +50,10 @@ export default {
     } else {
       EventsAPI
         .createEvent('http://localhost:3001/api/events', _event)
-        .then(event_ => {
+        .then(response => {
           AppDispatcher.dispatch({
             actionType: EventConstants.CREATE_EVENT_SUCCESS,
-            event_: event_
+            event_: response._event
           });
         })
         .catch(message => {

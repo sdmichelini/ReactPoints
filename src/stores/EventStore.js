@@ -75,10 +75,12 @@ EventStore.dispatchToken = AppDispatcher.register(action => {
 
     case EventConstants.CREATE_EVENT_SUCCESS:
       addEvent(action.event_);
+      EventStore.emitChange();
       break
 
     case EventConstants.CREATE_EVENT_ERROR:
       alert(action.message);
+      EventStore.emitChange();
       break
 
     default:
