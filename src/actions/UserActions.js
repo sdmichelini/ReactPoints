@@ -88,6 +88,13 @@ export default {
           message: message
         });
       });
+  },
+  updateUserSelection: (user_id, selection) => {
+    AppDispatcher.dispatch({
+      actionType: UserConstants.UPDATE_USER_SELECTION,
+      user_id: user_id,
+      selection: selection
+    });
   }
 
 }

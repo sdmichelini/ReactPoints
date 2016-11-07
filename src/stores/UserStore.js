@@ -5,9 +5,18 @@ import { EventEmitter } from 'events';
 const CHANGE_EVENT = 'change';
 
 let _users = [];
+let _users_selection = [];
 
 function setUsers(users) {
   _users = users;
+  _users_selection = [];
+  for(let user of users) {
+      _users_selection.push({name: user.name,id: user.user_id,selection: 3});
+    }
+}
+
+function setUsersSelection(users_selection) {
+  _users_selection = users_selection;
 }
 
 
@@ -27,6 +36,10 @@ class UserStoreClass extends EventEmitter {
 
   getUsers() {
     return _users;
+  }
+
+  getUsersSelection() {
+    return _users_selection;
   }
 
 }
@@ -98,6 +111,20 @@ UserStore.dispatchToken = AppDispatcher.register(action => {
 
     case UserConstants.SUBMIT_USERS_STATUS:
       alert('Auth0 Updated');
+      UserStore.emitChange();
+      break
+
+    case UserConstants.UPDATE_USER_SELECTION:
+      let u_id = action.user_id;
+      let selection = action.selection;
+      let users_selection = _users_selection;
+      for(let user of users_selection) {
+        if(user.id == u_id) {
+          user.selection = selection;
+          break;
+        }
+      }
+      setUsersSelection(users_selection);
       UserStore.emitChange();
       break
 
