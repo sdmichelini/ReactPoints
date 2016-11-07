@@ -11,6 +11,10 @@ function setEvents(events) {
   _events = events;
 }
 
+function addEvent(event_) {
+  _events.push(event_);
+}
+
 function setEvent(event_) {
   _event = event_;
 }
@@ -67,6 +71,14 @@ EventStore.dispatchToken = AppDispatcher.register(action => {
     case EventConstants.RECIEVE_EVENTS_ERROR:
       alert(action.message);
       EventStore.emitChange();
+      break
+
+    case EventConstants.CREATE_EVENT_SUCCESS:
+      addEvent(action.event_);
+      break
+
+    case EventConstants.CREATE_EVENT_ERROR:
+      alert(action.message);
       break
 
     default:

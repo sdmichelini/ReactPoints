@@ -7,16 +7,34 @@ import EventStore from '../stores/EventStore';
 class CreateEventComponent extends Component {
   constructor() {
     super();
+    //This populates the form w/ the current date
+    let d = new Date();
+    let month = d.getMonth() + 1;
+    if(month < 10) {
+      month = '0' + String(month);
+    } else {
+      month = String(month);
+    }
+    let day = d.getDate();
+    if(day < 10) {
+      day = '0' + String(day);
+    } else {
+      day = String(day);
+    }
+    let dateString = String(d.getFullYear()) + '-' + month + '-' + day;
     this.state = {
       name: '',
       pFor: 0,
       pAgainst: 0,
-      required: false
+      required: false,
+      date: (dateString)
     };
     this.handleNameChange = this.handleNameChange.bind(this);
     this.handlePointForChange = this.handlePointForChange.bind(this);
     this.handlePointAgainstChange = this.handlePointAgainstChange.bind(this);
     this.handleRequiredChange = this.handleRequiredChange.bind(this);
+    this.handleDateChange = this.handleDateChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
   handleNameChange(event) {
     this.setState({
@@ -36,15 +54,33 @@ class CreateEventComponent extends Component {
   handleRequiredChange(event) {
 
   }
+  handleDateChange(event) {
+    this.setState({
+      date: event.target.value
+    });
+  }
+  handleSubmit(event) {
+    event.preventDefault();
+    let _event = {
+      name: this.state.name,
+      required: this.state.required,
+      present: this.state.pFor,
+      missed: this.state.pAgainst,
+      date: this.state.date
+    };
+    console.log(_event);
+    EventActions.createEvent(_event);
+  }
   render() {
     let name = this.state.name || '';
     let pFor = this.state.pFor || 0;
     let pAgainst = this.state.pAgainst || 0;
+    let date = this.state.date;
     return (
       <div>
         <h1>Create New Event</h1>
         <h3>{name}</h3>
-        <form>
+        <form onSubmit={this.handleSubmit}>
           <div className='form-group'>
             <label htmlFor='eventName'>Event Name</label>
             <input type='text' value={name} onChange = {this.handleNameChange} className='form-control' id='eventName' aria-describedby='eventHelp' placeholder='Enter event name'/>
@@ -62,7 +98,7 @@ class CreateEventComponent extends Component {
           </div>
           <div className='form-group'>
             <label htmlFor='eventDate'>Date of Event</label>
-            <input type='date' className='form-control' id='eventDate' aria-describedby='eventDate'/>
+            <input type='date' value={date} onChange={this.handleDateChange}className='form-control' id='eventDate' aria-describedby='eventDate'/>
             <small id='eventDate' className='form-text text-muted'>Enter date of the event.</small>
           </div>
           <div className="form-check">
@@ -70,7 +106,7 @@ class CreateEventComponent extends Component {
               <input className="form-check-input" type="checkbox"/> Required?
             </label>
           </div>
-          <button type='submit' className='btn btn-primary'>Submit</button>
+          <button type='submit' className='btn btn-primary' >Submit</button>
         </form>
       </div>
     );

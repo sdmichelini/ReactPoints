@@ -117,12 +117,16 @@ function checkAdmin(req, res, next) {
   let auth = false;
   for(let client of ALLOWED_CLIENTS) {
     if(client === req.user.sub) {
+      auth = true;
       next();
       break;
     }
   }
-  res.status(403);
-  res.json({error:"Client not allowed to access resource."});
+  if(!auth) {
+    res.status(403);
+    res.json({error:"Client not allowed to access resource."});
+  }
+
 }
 
 app.get('/api/events', (req, res) => {
@@ -137,10 +141,14 @@ app.get('/api/events/:id', authCheck, (req, res) => {
 });
 
 app.post('/api/events', authCheck, checkAdmin, jsonParser, (req, res) => {
-  if(!req.body.name || !req.body.required || !req.body.present || !req.body.missed) {
+  console.log(req.body);
+  if(!req.body.name) {
     res.status(400);
-    res.json({message:'Invalid Request.'});
-  } else {
+    res.json({message:'Invalid name.'});
+  } else if(req.body.required===undefined) {
+    res.status(400);
+    res.json({message:'Invalid required.'});
+  }else {
     res.json({message:'Success'});
   }
 });

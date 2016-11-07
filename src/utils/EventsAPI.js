@@ -28,5 +28,19 @@ export default {
           resolve(JSON.parse(response.text));
         })
     });
+  },
+  //HTTP post to the endpoint
+  createEvent: (url, _event) => {
+    return new Promise((resolve, reject) => {
+      request
+        .post(url)
+        .type('json')
+        .send(_event)
+        .set('Authorization', 'Bearer ' + AuthStore.getJwt())
+        .end((err, response) => {
+          if (err) reject(err);
+          resolve(JSON.parse(response.text));
+        })
+    });
   }
 }

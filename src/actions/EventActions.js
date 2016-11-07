@@ -36,6 +36,34 @@ export default {
           message: message
         });
       });
+  },
+  /*
+    This function will call the events API and post a new event.
+
+  */
+  createEvent: (_event) => {
+    if(!_event.name || !_event.date) {
+      AppDispatcher.dispatch({
+        actionType: EventConstants.CREATE_EVENT_ERROR,
+        message: "Invalid Parameters for Event Creation."
+      });
+    } else {
+      EventsAPI
+        .createEvent('http://localhost:3001/api/events', _event)
+        .then(event_ => {
+          AppDispatcher.dispatch({
+            actionType: EventConstants.CREATE_EVENT_SUCCESS,
+            event_: event_
+          });
+        })
+        .catch(message => {
+          AppDispatcher.dispatch({
+            actionType: EventConstants.CREATE_EVENT_ERROR,
+            message: message
+          });
+        });
+    }
+
   }
 
 }
