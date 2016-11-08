@@ -63,6 +63,7 @@ class CreatePointItemComponent extends Component {
   }
 
   onChangeSelect(e) {
+    console.log(e.target.value);
     this.setState({
       currentSelect: e.target.value
     });
@@ -70,6 +71,9 @@ class CreatePointItemComponent extends Component {
 
   onSubmit(e) {
     e.preventDefault();
+    let event_id = this.state.currentSelect;
+    let users = this.state.users;
+    PointActions.submitPointsForEvent(event_id, users);
   }
   render() {
     let userListItems;

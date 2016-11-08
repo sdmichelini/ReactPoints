@@ -21,7 +21,7 @@ const authCheck = jwt({
   audience: process.env.AUTH0_CLIENT_ID
 });
 
-let next_event_id = 2;
+let next_event_id = 3;
 
 let events = [
   {
@@ -32,8 +32,19 @@ let events = [
     when: "2016-10-27T20:57:44.286Z",
     points_present: 5,
     points_missed: 0
+  },
+  {
+    id: 2,
+    name: "Work Party 2",
+    type: 0,
+    required: true,
+    when: "2016-10-27T20:57:44.286Z",
+    points_present: 5,
+    points_missed: 0
   }
 ];
+
+var totals = {};
 
 var points = [
   {
@@ -56,6 +67,7 @@ var all_point_items = [
   {
     id: 1,
     user_id: 1,
+    name: 'J',
     _event: {
       name: "Work Party",
       id: 1
@@ -65,6 +77,7 @@ var all_point_items = [
   {
     id: 2,
     user_id: 2,
+    name: 'Bill',
     _event: {
       name: "Work Party",
       id: 1
@@ -130,6 +143,22 @@ function checkAdmin(req, res, next) {
   }
 
 }
+/*
+  Update the points cache from all_point_items
+*/
+function calculatePoints() {
+  let pointTotals = {};
+  for(let item of all_point_items) {
+    if(pointTotals[item.user_id]) {
+      pointTotals[item.user_id].points = pointTotals[item.user_id].points + item.points;
+    } else {
+      pointTotals[item.user_id] = {};
+      pointTotals[item.user_id].points = item.points;
+      pointTotals[item.user_id].name = item.name;
+    }
+  }
+  totals = pointTotals;
+}
 
 app.get('/api/events', (req, res) => {
   const allEvents = events.map(event => {
@@ -175,10 +204,7 @@ app.post('/api/events', authCheck, checkAdmin, jsonParser, (req, res) => {
 });
 
 app.get('/api/points', (req, res)=> {
-  const allPoints = points.map(point => {
-    return { name: point.name, points: point.points, id: point.id, user_id: point.user_id }
-  });
-  res.json({ points: allPoints, message:"Success!" });
+  res.json({ points: totals, message:"Success!" });
 });
 
 app.post('/api/points', authCheck, checkAdmin, jsonParser, (req, res) => {
@@ -198,14 +224,15 @@ app.post('/api/points', authCheck, checkAdmin, jsonParser, (req, res) => {
     res.status(400);
     res.json({message:'Missing users.'});
   } else {
-    _event = events.filter(e => e.id === parseInt(req.body.event_id));
+    let _event = events.filter(e => e.id === parseInt(req.body.event_id));
     if(!_event) {
       res.status(404);
       res.json({message:'Event not found.'});
     } else {
-      for(user of req.body.users) {
+      _event = _event[0];
+      for(let user of req.body.users) {
         let points;
-        switch(req.body.status) {
+        switch(user.selection) {
           case 0: //Present
             points = _event.points_present;
             break
@@ -217,10 +244,12 @@ app.post('/api/points', authCheck, checkAdmin, jsonParser, (req, res) => {
             break
           default:
             points = 0;
+            break
         }
         let item = {
           id: next_point_item,
-          user_id: req.body.user_id,
+          user_id: user.id,
+          name: user.name,
           _event: {
             name: _event.name,
             id: _event.id
@@ -230,7 +259,9 @@ app.post('/api/points', authCheck, checkAdmin, jsonParser, (req, res) => {
         next_point_item = next_point_item + 1;
         all_point_items.push(item);
       }
+      calculatePoints();
       res.json({message: 'Success'});
+
     }
   }
 
@@ -252,5 +283,6 @@ app.get('/api/auth', authCheck, checkAdmin, (req, res) => {
   res.json({message:"Token",token:process.env.AUTH0_TOKEN});
 });
 
+calculatePoints();
 app.listen(3001);
 console.log('Listening on http://localhost:3001');

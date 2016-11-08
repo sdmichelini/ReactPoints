@@ -10,9 +10,7 @@ export default {
       .then(points => {
         AppDispatcher.dispatch({
           actionType: PointConstants.RECIEVE_POINTS,
-          points: points.points.sort((a ,b) => {
-            return a.points < b.points
-          })
+          points: points.points
         });
       })
       .catch(message => {

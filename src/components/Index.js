@@ -6,10 +6,11 @@ import  PointActions  from '../actions/PointActions';
 
 import PointListItem  from './PointListItem';
 
-function getEventListItem(point) {
+function getEventListItem(key, point) {
+  point.id = key;
   return (
     <PointListItem
-      key={point.id}
+      key={key}
       point={point}
     />
   );
@@ -48,7 +49,12 @@ class IndexComponent extends Component {
     let eventListItems;
     if (this.state.points) {
       // Map over the contacts and get an element for each of them
-      eventListItems = this.state.points.map(event => getEventListItem(event));
+      eventListItems = [];
+      for(let key in this.state.points) {
+        eventListItems.push(getEventListItem(key, this.state.points[key]));
+      }
+    } else {
+      eventListItems = 'No points yet.';
     }
     return (
       <div>

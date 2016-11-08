@@ -15,13 +15,10 @@ class UserOptionsListItem extends Component {
       switch (buttonType) {
         case 0:
           return 'btn btn-success';
-          break
         case 1:
           return 'btn btn-danger';
-          break
         default:
           return 'btn btn-primary';
-          break
       }
     }
   }
