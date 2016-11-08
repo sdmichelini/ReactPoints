@@ -8,6 +8,8 @@ const jwt = require('express-jwt');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
+const MongoClient = require('mongodb').MongoClient;
+
 app.use(cors());
 
 // create application/json parser
@@ -22,6 +24,8 @@ const authCheck = jwt({
 });
 
 let next_event_id = 3;
+
+let db;
 
 let events = [
   {
@@ -199,7 +203,16 @@ app.post('/api/events', authCheck, checkAdmin, jsonParser, (req, res) => {
     };
     events.push(_event);
     next_event_id = next_event_id + 1;
-    res.json({message:'Success', _event:_event});
+    db.collection('events').save(_event, (err, result) => {
+      if (err) {
+        res.status(500);
+        res.json({message:'Database Error.'});
+        return console.log(err)
+      }
+      res.status(201);//HTTP Created
+      res.json({message:'Success.'});
+    });
+
   }
 });
 
@@ -230,6 +243,7 @@ app.post('/api/points', authCheck, checkAdmin, jsonParser, (req, res) => {
       res.json({message:'Event not found.'});
     } else {
       _event = _event[0];
+      let items = [];
       for(let user of req.body.users) {
         let points;
         switch(user.selection) {
@@ -256,12 +270,20 @@ app.post('/api/points', authCheck, checkAdmin, jsonParser, (req, res) => {
           },
           points: points
         };
+        items.push(item);
         next_point_item = next_point_item + 1;
         all_point_items.push(item);
       }
       calculatePoints();
-      res.json({message: 'Success'});
-
+      db.collection('points').insert(items, (err, result) => {
+        if (err) {
+          res.status(500);
+          res.json({message:'Database Error.'});
+          return console.log(err)
+        }
+        res.status(201);//HTTP Created
+        res.json({message:'Success.'});
+      });
     }
   }
 
@@ -284,5 +306,9 @@ app.get('/api/auth', authCheck, checkAdmin, (req, res) => {
 });
 
 calculatePoints();
-app.listen(3001);
-console.log('Listening on http://localhost:3001');
+MongoClient.connect(process.env.MONGO_URL, (err, database) => {
+  if(err) return console.log(err);
+  db = database;
+  app.listen(3001);
+  console.log('Listening on http://localhost:3001');
+});
