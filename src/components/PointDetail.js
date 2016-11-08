@@ -56,9 +56,8 @@ class PointDetailComponent extends Component {
       // Map over the contacts and get an element for each of them
       pointListItems = this.state.point_items.items.map(point_item => getPointListItem(point_item));
       user = this.state.point_items.user;
-      console.log(user.name);
     } else {
-      user = {name:"Unknown"};
+      user = {name:'Unknown'};
       pointListItems = 'No Points for User.';
     }
     return (

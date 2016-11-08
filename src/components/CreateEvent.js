@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import { ListGroup } from 'react-bootstrap';
 // import { Link } from 'react-router';
 import EventActions from '../actions/EventActions';
-import EventStore from '../stores/EventStore';
 
 class CreateEventComponent extends Component {
   constructor() {
@@ -68,7 +66,6 @@ class CreateEventComponent extends Component {
       missed: this.state.pAgainst,
       date: this.state.date
     };
-    console.log(_event);
     EventActions.createEvent(_event);
   }
   render() {

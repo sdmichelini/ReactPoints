@@ -37,6 +37,30 @@ export default {
           message: message
         });
       })
+  },
+  submitPointsForEvent: (event_id, users) => {
+    if(!Array.isArray(users)) {
+      AppDispatcher.dispatch({
+        actionType: PointConstants.SUBMIT_POINTS_ERROR,
+        message: 'Invalid Users Array.'
+      });
+    } else {
+      let data = {event_id: event_id, users: users};
+      PointsAPI
+        .submitPoints('http://localhost:3001/api/points', data)
+        .then(response => {
+          AppDispatcher.dispatch({
+            actionType: PointConstants.SUBMIT_POINTS,
+            response: response
+          });
+        })
+        .catch(message => {
+          AppDispatcher.dispatch({
+            actionType: PointConstants.SUBMIT_POINTS_ERROR,
+            message: message
+          });
+        });
+    }
   }
 
 }

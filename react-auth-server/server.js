@@ -182,34 +182,55 @@ app.get('/api/points', (req, res)=> {
 });
 
 app.post('/api/points', authCheck, checkAdmin, jsonParser, (req, res) => {
-  if(!req.body.user_id) {
+  /*
+  {
+    "event_id":"dhhdd",
+    "users":[
+      {"id":"dhdhdh", "status":0}
+    ]
+  }
+  */
+
+  if(!req.body.event_id) {
     res.status(400);
-    res.json({message:'Missing user_id.'});
-  } else if(!req.body.event_id) {
+    res.json({message:'Missing event_id.'});
+  } else if(!req.body.users) {
     res.status(400);
-    res.json({message:'Missing event_id'});
-  } else if(!req.body.present) {
-    res.status(400);
-    res.json({message:'Mising present'});
+    res.json({message:'Missing users.'});
   } else {
     _event = events.filter(e => e.id === parseInt(req.body.event_id));
     if(!_event) {
       res.status(404);
       res.json({message:'Event not found.'});
     } else {
-      let points = (req.body.present) ? _event.points_present : _event.points_missed;
-      let item = {
-        id: next_point_item,
-        user_id: req.body.user_id,
-        _event: {
-          name: _event.name,
-          id: _event.id
-        },
-        points: points
-      };
-      next_point_item = next_point_item + 1;
-      all_point_items.push(item);
-      res.json({message: 'Success', item: item});
+      for(user of req.body.users) {
+        let points;
+        switch(req.body.status) {
+          case 0: //Present
+            points = _event.points_present;
+            break
+          case 1: //Absent and Unexcused
+            points = -_event.points_missed;
+            break
+          case 2: //Absent and Excused
+            points = 0;
+            break
+          default:
+            points = 0;
+        }
+        let item = {
+          id: next_point_item,
+          user_id: req.body.user_id,
+          _event: {
+            name: _event.name,
+            id: _event.id
+          },
+          points: points
+        };
+        next_point_item = next_point_item + 1;
+        all_point_items.push(item);
+      }
+      res.json({message: 'Success'});
     }
   }
 

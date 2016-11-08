@@ -26,11 +26,13 @@ class CreatePointItemComponent extends Component {
     super();
     this.state = {
       events: [],
-      users: []
+      users: [],
+      currentSelect: '1'
     }
     this.onChangeEvents = this.onChangeEvents.bind(this);
     this.onChangeUsers = this.onChangeUsers.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.onChangeSelect = this.onChangeSelect.bind(this);
   }
 
   componentWillMount() {
@@ -60,6 +62,12 @@ class CreatePointItemComponent extends Component {
     });
   }
 
+  onChangeSelect(e) {
+    this.setState({
+      currentSelect: e.target.value
+    });
+  }
+
   onSubmit(e) {
     e.preventDefault();
   }
@@ -70,10 +78,21 @@ class CreatePointItemComponent extends Component {
     } else {
       userListItems = 'No Users in System.';
     }
+    let eventSelectItems;
+    if(this.state.events) {
+      eventSelectItems = this.state.events.map(_event => (<option key={_event.id} value={String(_event.id)}>{_event.name + ' ' + _event.when}</option>));
+    }
     return (
       <div>
         <h1>Create Point Item</h1>
         <form onSubmit={this.onSubmit}>
+          <h3>Event</h3>
+          <div className="form-group">
+            <label htmlFor="sel1">Event list:</label>
+            <select className="form-control" id="sel1" value={this.state.currentSelect} onChange={this.onChangeSelect}>
+              {eventSelectItems}
+            </select>
+          </div>
           <h3>Users</h3>
           <ListGroup>
             {userListItems}

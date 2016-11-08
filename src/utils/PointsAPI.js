@@ -28,5 +28,19 @@ export default {
           resolve(JSON.parse(response.text));
         })
     });
+  },
+
+  submitPoints: (url, data) => {
+    return new Promise((resolve, reject) => {
+      request
+        .post(url)
+        .type('json')
+        .send(data)
+        .set('Authorization', 'Bearer ' + AuthStore.getJwt())
+        .end((err, response) => {
+          if (err) reject(err);
+          resolve(JSON.parse(response.text));
+        })
+    });
   }
 }

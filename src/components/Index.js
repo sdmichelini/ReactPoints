@@ -7,7 +7,6 @@ import  PointActions  from '../actions/PointActions';
 import PointListItem  from './PointListItem';
 
 function getEventListItem(point) {
-  console.log(point);
   return (
     <PointListItem
       key={point.id}
