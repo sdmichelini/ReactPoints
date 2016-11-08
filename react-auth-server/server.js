@@ -9,6 +9,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const MongoClient = require('mongodb').MongoClient;
+const ObjectId = require('mongodb').ObjectID;
 
 app.use(cors());
 
@@ -165,14 +166,30 @@ function calculatePoints() {
 }
 
 app.get('/api/events', (req, res) => {
-  const allEvents = events.map(event => {
-    return { id: event.id, name: event.name, type: event.type, required: event.required, when: event.when, points_present: event.points_present, points_missed: event.points_missed}
+  db.collection('events').find().toArray((err, events) => {
+    if (err) {
+      res.status(500);
+      res.json({message:'Database Error.'});
+      return console.log(err)
+    }
+    const allEvents = events.map(event => {
+      return { id: event._id, name: event.name, type: event.type, required: event.required, when: event.when, points_present: event.points_present, points_missed: event.points_missed}
+    });
+    res.json(allEvents);
   });
-  res.json(allEvents);
 });
 
 app.get('/api/events/:id', authCheck, (req, res) => {
-  res.json(events.filter(event => event.id === parseInt(req.params.id)));
+  let obj_id = new ObjectId(req.params.id);
+  db.collection('events').findOne({'_id':obj_id}, (err, event_) => {
+    if(err) {
+      res.status(500);
+      res.json({message:'Database Error.'});
+      return console.log(err);
+    }
+    res.json({id: event_._id, name: event_.name, type: event_.type, required: event_.required, when: event_.when,
+    points_present: event_.points_present, points_missed: event_.points_missed});
+  });
 });
 
 app.post('/api/events', authCheck, checkAdmin, jsonParser, (req, res) => {
@@ -203,6 +220,7 @@ app.post('/api/events', authCheck, checkAdmin, jsonParser, (req, res) => {
     };
     events.push(_event);
     next_event_id = next_event_id + 1;
+    //Save it in the database
     db.collection('events').save(_event, (err, result) => {
       if (err) {
         res.status(500);
@@ -210,7 +228,7 @@ app.post('/api/events', authCheck, checkAdmin, jsonParser, (req, res) => {
         return console.log(err)
       }
       res.status(201);//HTTP Created
-      res.json({message:'Success.'});
+      res.json({message:'Success.', event: _event});
     });
 
   }

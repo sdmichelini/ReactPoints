@@ -39,10 +39,7 @@ class EventDetailComponent extends Component {
   render() {
     let event;
     if (this.state.event) {
-      if(Array.isArray(this.state.event)) {
-        event = this.state.event[0];
-      }
-
+      event = this.state.event;
     }
     return (
       <div>
