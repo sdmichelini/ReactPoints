@@ -51,8 +51,11 @@ class CreatePointItemComponent extends Component {
   }
 
   onChangeEvents() {
+    let events = EventStore.getEvents()
+    let currentSelect = (events.length > 0) ? events[0].id : '1';
     this.setState({
-      events: EventStore.getEvents()
+      events: events,
+      currentSelect: currentSelect
     });
   }
 

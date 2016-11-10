@@ -24,110 +24,9 @@ const authCheck = jwt({
   audience: process.env.AUTH0_CLIENT_ID
 });
 
-let next_event_id = 3;
-
 let db;
 
-let events = [
-  {
-    id: 1,
-    name: "Work Party",
-    type: 0,
-    required: true,
-    when: "2016-10-27T20:57:44.286Z",
-    points_present: 5,
-    points_missed: 0
-  },
-  {
-    id: 2,
-    name: "Work Party 2",
-    type: 0,
-    required: true,
-    when: "2016-10-27T20:57:44.286Z",
-    points_present: 5,
-    points_missed: 0
-  }
-];
-
 var totals = {};
-
-var points = [
-  {
-    name: "Test User",
-    points: 1000,
-    id: 1,
-    user_id: 1
-  },
-  {
-    name: "Test User 2",
-    points: 200,
-    id: 2,
-    user_id: 2
-  }
-];
-
-let next_point_item = 3;
-
-var all_point_items = [
-  {
-    id: 1,
-    user_id: 1,
-    name: 'J',
-    _event: {
-      name: "Work Party",
-      id: 1
-    },
-    points: 5
-  },
-  {
-    id: 2,
-    user_id: 2,
-    name: 'Bill',
-    _event: {
-      name: "Work Party",
-      id: 1
-    },
-    points: 5
-  }
-];
-
-var all_users = [
-  {
-    id: 1,
-    name: "Test User"
-  },
-  {
-    id: 2,
-    name: "Test User 2"
-  }
-]
-
-var point_items = [
-  {
-    id: 1,
-    _user: {
-      id: 1,
-      name: "Test User",
-    },
-    _event: {
-      name: "Work Party",
-      id: 1
-    },
-    points: 5
-  },
-  {
-    id: 2,
-    _user: {
-      id: 2,
-      name: "Test User 2",
-    },
-    _event: {
-      name: "Work Party",
-      id: 1
-    },
-    points: 5
-  }
-];
 
 const ALLOWED_CLIENTS = [
   'auth0|5813aac8f1413bed0950e515'
@@ -153,17 +52,6 @@ function checkAdmin(req, res, next) {
 */
 function calculatePoints() {
   let pointTotals = {};
-  /*
-  for(let item of all_point_items) {
-    if(pointTotals[item.user_id]) {
-      pointTotals[item.user_id].points = pointTotals[item.user_id].points + item.points;
-    } else {
-      pointTotals[item.user_id] = {};
-      pointTotals[item.user_id].points = item.points;
-      pointTotals[item.user_id].name = item.name;
-    }
-  }
-  */
   db.collection('points').find().toArray((err, items) => {
     for(let item of items) {
       if(pointTotals[item.user_id]) {
@@ -223,7 +111,6 @@ app.post('/api/events', authCheck, checkAdmin, jsonParser, (req, res) => {
     res.json({message:'Missing date parameter.'});
   } else {
     let _event = {
-      id: next_event_id,
       name: req.body.name,
       type: 0,
       required: req.body.required,
@@ -231,8 +118,6 @@ app.post('/api/events', authCheck, checkAdmin, jsonParser, (req, res) => {
       points_present: req.body.present,
       points_missed: req.body.missed
     };
-    events.push(_event);
-    next_event_id = next_event_id + 1;
     //Save it in the database
     db.collection('events').save(_event, (err, result) => {
       if (err) {
@@ -268,57 +153,57 @@ app.post('/api/points', authCheck, checkAdmin, jsonParser, (req, res) => {
     res.status(400);
     res.json({message:'Missing users.'});
   } else {
-    let _event = events.filter(e => e.id === parseInt(req.body.event_id));
-    if(!_event) {
-      res.status(404);
-      res.json({message:'Event not found.'});
-    } else {
-      _event = _event[0];
-      let items = [];
-      for(let user of req.body.users) {
-        let points;
-        switch(user.selection) {
-          case 0: //Present
-            points = _event.points_present;
-            break
-          case 1: //Absent and Unexcused
-            points = -_event.points_missed;
-            break
-          case 2: //Absent and Excused
-            points = 0;
-            break
-          default:
-            points = 0;
-            break
-        }
-        let item = {
-          id: next_point_item,
-          user_id: user.id,
-          name: user.name,
-          _event: {
-            name: _event.name,
-            id: _event.id
-          },
-          points: points
-        };
-        items.push(item);
-        next_point_item = next_point_item + 1;
-        all_point_items.push(item);
+    let obj_id = new ObjectId(req.body.event_id);
+    db.collection('events').findOne({_id: obj_id}, (err, _event)=>{
+      if(err) {
+        res.status(500);
+        res.json({message:'Internal Server Error.'});
       }
-
-      db.collection('points').insert(items, (err, result) => {
-        if (err) {
-          res.status(500);
-          res.json({message:'Database Error.'});
-          return console.log(err)
+      else if(!_event) {
+        res.status(404);
+        res.json({message:'Event not found.'});
+      } else {
+        let items = [];
+        for(let user of req.body.users) {
+          let points;
+          switch(user.selection) {
+            case 0: //Present
+              points = _event.points_present;
+              break
+            case 1: //Absent and Unexcused
+              points = -_event.points_missed;
+              break
+            case 2: //Absent and Excused
+              points = 0;
+              break
+            default:
+              points = 0;
+              break
+          }
+          let item = {
+            user_id: user.id,
+            name: user.name,
+            _event: {
+              name: _event.name,
+              id: _event._id
+            },
+            points: points
+          };
+          items.push(item);
         }
-        res.status(201);//HTTP Created
-        res.json({message:'Success.'});
-        calculatePoints();
-      });
-    }
+        db.collection('points').insert(items, (err, result) => {
+          if (err) {
+            res.status(500);
+            res.json({message:'Database Error.'});
+            return console.log(err)
+          }
+          res.status(201);//HTTP Created
+          res.json({message:'Success.'});
+          calculatePoints();
+        });
+      }
+    });
   }
-
 });
 
 app.get('/api/users/:user_id/points', (req, res) => {
