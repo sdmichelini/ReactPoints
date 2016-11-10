@@ -153,6 +153,7 @@ function checkAdmin(req, res, next) {
 */
 function calculatePoints() {
   let pointTotals = {};
+  /*
   for(let item of all_point_items) {
     if(pointTotals[item.user_id]) {
       pointTotals[item.user_id].points = pointTotals[item.user_id].points + item.points;
@@ -162,6 +163,18 @@ function calculatePoints() {
       pointTotals[item.user_id].name = item.name;
     }
   }
+  */
+  db.collection('points').find().toArray((err, items) => {
+    for(let item of items) {
+      if(pointTotals[item.user_id]) {
+        pointTotals[item.user_id].points = pointTotals[item.user_id].points + item.points;
+      } else {
+        pointTotals[item.user_id] = {};
+        pointTotals[item.user_id].points = item.points;
+        pointTotals[item.user_id].name = item.name;
+      }
+    }
+  });
   totals = pointTotals;
 }
 
@@ -292,7 +305,7 @@ app.post('/api/points', authCheck, checkAdmin, jsonParser, (req, res) => {
         next_point_item = next_point_item + 1;
         all_point_items.push(item);
       }
-      calculatePoints();
+
       db.collection('points').insert(items, (err, result) => {
         if (err) {
           res.status(500);
@@ -301,6 +314,7 @@ app.post('/api/points', authCheck, checkAdmin, jsonParser, (req, res) => {
         }
         res.status(201);//HTTP Created
         res.json({message:'Success.'});
+        calculatePoints();
       });
     }
   }
@@ -308,25 +322,37 @@ app.post('/api/points', authCheck, checkAdmin, jsonParser, (req, res) => {
 });
 
 app.get('/api/users/:user_id/points', (req, res) => {
-  let user_id = parseInt(req.params.user_id);
-  const user = all_users.filter(user => user.id === user_id);
-  if(user.length < 0){
-    res.status(404);
-    res.json({error: "User Not Found"});
-  }else{
-    const userPoints = all_point_items.filter(point_item => point_item.user_id=== user_id);
-    res.json({ user: user[0], items: userPoints});
-  }
+  let user_id = req.params.user_id;
+  db.collection('points').find({user_id: user_id}).toArray((err, items) => {
+    if(err) {
+      res.status(500);
+      res.json({message:'Databse Error.'});
+      return console.log(err);
+    } else if (!items || (items.length == 0)) {
+      res.status(404);
+      res.json({message:'User ID not found.'});
+      return console.log('404: points w/ user_id'+err);
+    }
+    let name = items[0].name;
+    let user_id = items[0].user_id;
+    let items2 = [];
+    for(let item of items) {
+      items2.push({ event: item._event, points: item.points, id: item._id});
+    }
+    let response = {user:{name: name, id: user_id}, items: items2};
+    console.log(response);
+    res.json(response);
+  });
 });
 
 app.get('/api/auth', authCheck, checkAdmin, (req, res) => {
   res.json({message:"Token",token:process.env.AUTH0_TOKEN});
 });
 
-calculatePoints();
 MongoClient.connect(process.env.MONGO_URL, (err, database) => {
   if(err) return console.log(err);
   db = database;
+  calculatePoints();
   app.listen(3001);
   console.log('Listening on http://localhost:3001');
 });

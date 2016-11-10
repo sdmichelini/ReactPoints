@@ -61,6 +61,7 @@ PointStore.dispatchToken = AppDispatcher.register(action => {
       break
 
     case PointConstants.RECIEVE_POINTS_ITEM:
+
       setPointItems(action.point_items);
       PointStore.emitChange();
       break;
