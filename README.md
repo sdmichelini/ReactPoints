@@ -11,3 +11,9 @@ An event is something in which a person attends or an activity in which they com
 ### Point Item ###
 
 A point item is directly linked to an event and is the amount of points a person receives for attending or missing an event.
+
+## To-Do ##
+
+[ ]-Make new event auto redirect to event creation
+[ ]-Make variable point creation
+[ ]-Caching(HTTP and Database) 
