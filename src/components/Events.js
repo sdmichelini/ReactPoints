@@ -8,7 +8,9 @@ import EventListItem from './EventListItem';
 // We'll use this function to get a contact
 // list item for each of the contacts in our list
 function getEventListItem(event) {
-  console.log(event);
+  if(!event){
+    return (<div>No Event</div>);
+  }
   return (
     <EventListItem
       key={event.id}

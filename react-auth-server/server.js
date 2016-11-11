@@ -81,16 +81,22 @@ app.get('/api/events', (req, res) => {
 });
 
 app.get('/api/events/:id', authCheck, (req, res) => {
-  let obj_id = new ObjectId(req.params.id);
-  db.collection('events').findOne({'_id':obj_id}, (err, event_) => {
-    if(err) {
-      res.status(500);
-      res.json({message:'Database Error.'});
-      return console.log(err);
-    }
-    res.json({id: event_._id, name: event_.name, type: event_.type, required: event_.required, when: event_.when,
-    points_present: event_.points_present, points_missed: event_.points_missed});
-  });
+  if(!req.params.id || (req.params.id.length != 24)) {
+    res.status(400);
+    res.json({message: 'Invalid Event ID.'});
+    return console.log('Invalid Event ID.');
+  } else {
+    let obj_id = new ObjectId(req.params.id);
+    db.collection('events').findOne({'_id':obj_id}, (err, event_) => {
+      if(err) {
+        res.status(500);
+        res.json({message:'Database Error.'});
+        return console.log(err);
+      }
+      res.json({id: event_._id, name: event_.name, type: event_.type, required: event_.required, when: event_.when,
+      points_present: event_.points_present, points_missed: event_.points_missed});
+    });
+  }
 });
 
 app.post('/api/events', authCheck, checkAdmin, jsonParser, (req, res) => {
@@ -110,7 +116,7 @@ app.post('/api/events', authCheck, checkAdmin, jsonParser, (req, res) => {
     res.status(400);
     res.json({message:'Missing date parameter.'});
   } else {
-    let _event = {
+    let event_ = {
       name: req.body.name,
       type: 0,
       required: req.body.required,
@@ -119,14 +125,16 @@ app.post('/api/events', authCheck, checkAdmin, jsonParser, (req, res) => {
       points_missed: req.body.missed
     };
     //Save it in the database
-    db.collection('events').save(_event, (err, result) => {
+    db.collection('events').save(event_, (err, result) => {
       if (err) {
         res.status(500);
         res.json({message:'Database Error.'});
         return console.log(err)
       }
       res.status(201);//HTTP Created
-      res.json({message:'Success.', event: _event});
+      let event_result = {id: result.ops[0]._id, name: event_.name, type: event_.type, required: event_.required, when: event_.when,points_present: event_.points_present, points_missed: event_.points_missed};
+      console.log(result);
+      res.json({message:'Success.', _event: event_result});
     });
 
   }

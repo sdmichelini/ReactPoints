@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 // import { Link } from 'react-router';
 import EventActions from '../actions/EventActions';
+import EventStore from '../stores/EventStore';
+import { browserHistory } from 'react-router';
 
 class CreateEventComponent extends Component {
   constructor() {
@@ -33,6 +35,23 @@ class CreateEventComponent extends Component {
     this.handleRequiredChange = this.handleRequiredChange.bind(this);
     this.handleDateChange = this.handleDateChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleEventUpdate = this.handleEventUpdate.bind(this);
+  }
+
+  componentWillMount() {
+    EventStore.addChangeListener(this.handleEventUpdate);
+  }
+
+  componentWillUnmount() {
+    EventStore.removeChangeListener(this.handleEventUpdate);
+  }
+
+  handleEventUpdate() {
+    let event_id = EventStore.getCreateId();
+    if(event_id.length == 24) {
+      browserHistory.push('/create/point/'+event_id);
+    }
+
   }
   handleNameChange(event) {
     this.setState({

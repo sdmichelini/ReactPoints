@@ -7,12 +7,16 @@ const CHANGE_EVENT = 'change';
 let _events = [];
 let _event = {};
 
+let _create_id = '';
+
 function setEvents(events) {
   _events = events;
 }
 
 function addEvent(event_) {
   _events.push(event_);
+  _create_id = event_.id;
+  console.log(_create_id);
 }
 
 function setEvent(event_) {
@@ -35,6 +39,10 @@ class EventStoreClass extends EventEmitter {
 
   getEvents() {
     return _events;
+  }
+
+  getCreateId() {
+    return _create_id;
   }
 
   getEvent() {

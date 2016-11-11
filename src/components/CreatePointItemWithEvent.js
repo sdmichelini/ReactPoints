@@ -20,19 +20,17 @@ function getUserOptions(user) {
   )
 }
 
-class CreatePointItemComponent extends Component {
+class CreatePointItemComponentWithEvent extends Component {
 
   constructor() {
     super();
     this.state = {
-      events: [],
-      users: [],
-      currentSelect: '1'
+      _event: {},
+      users: []
     }
     this.onChangeEvents = this.onChangeEvents.bind(this);
     this.onChangeUsers = this.onChangeUsers.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
-    this.onChangeSelect = this.onChangeSelect.bind(this);
   }
 
   componentWillMount() {
@@ -41,7 +39,7 @@ class CreatePointItemComponent extends Component {
   }
 
   componentDidMount() {
-    EventActions.recieveEvents();
+    EventActions.getEvent(this.props.params.id);
     UserActions.recieveUsers();
   }
 
@@ -51,11 +49,9 @@ class CreatePointItemComponent extends Component {
   }
 
   onChangeEvents() {
-    let events = EventStore.getEvents();
-    let currentSelect = (events.length > 0) ? events[0].id : '1';
+    let _event = EventStore.getEvent(this.props.params.id);
     this.setState({
-      events: events,
-      currentSelect: currentSelect
+      _event:_event
     });
   }
 
@@ -74,7 +70,11 @@ class CreatePointItemComponent extends Component {
 
   onSubmit(e) {
     e.preventDefault();
-    let event_id = this.state.currentSelect;
+    if(!this.state._event) {
+      alert('Event not found.');
+      return;
+    }
+    let event_id = this.props.params.id;
     let users = this.state.users;
     PointActions.submitPointsForEvent(event_id, users);
   }
@@ -85,21 +85,15 @@ class CreatePointItemComponent extends Component {
     } else {
       userListItems = 'No Users in System.';
     }
-    let eventSelectItems;
-    if(this.state.events) {
-      eventSelectItems = this.state.events.map(_event => (<option key={_event.id} value={String(_event.id)}>{_event.name + ' ' + _event.when}</option>));
+    let eventName = 'No Event Found.';
+    if(this.state._event && this.state._event.name) {
+      eventName = 'Event: '+this.state._event.name;
     }
     return (
       <div>
         <h1>Create Point Item</h1>
         <form onSubmit={this.onSubmit}>
-          <h3>Event</h3>
-          <div className="form-group">
-            <label htmlFor="sel1">Event list:</label>
-            <select className="form-control" id="sel1" value={this.state.currentSelect} onChange={this.onChangeSelect}>
-              {eventSelectItems}
-            </select>
-          </div>
+          <h3>{eventName}</h3>
           <h3>Users</h3>
           <ListGroup>
             {userListItems}
@@ -111,4 +105,4 @@ class CreatePointItemComponent extends Component {
   }
 }
 
-export default CreatePointItemComponent;
+export default CreatePointItemComponentWithEvent;
