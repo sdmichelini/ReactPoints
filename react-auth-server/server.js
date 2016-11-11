@@ -145,15 +145,6 @@ app.get('/api/points', (req, res)=> {
 });
 
 app.post('/api/points', authCheck, checkAdmin, jsonParser, (req, res) => {
-  /*
-  {
-    "event_id":"dhhdd",
-    "users":[
-      {"id":"dhdhdh", "status":0}
-    ]
-  }
-  */
-
   if(!req.body.event_id) {
     res.status(400);
     res.json({message:'Missing event_id.'});

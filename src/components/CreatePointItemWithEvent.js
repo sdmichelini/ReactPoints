@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { browserHistory } from 'react-router';
 
 import PointActions from '../actions/PointActions';
 
@@ -8,6 +9,7 @@ import EventActions from '../actions/EventActions';
 import UserActions from '../actions/UserActions';
 import EventStore from '../stores/EventStore';
 import UserStore from '../stores/UserStore';
+import PointStore from '../stores/PointStore';
 
 import { ListGroup } from 'react-bootstrap';
 
@@ -31,11 +33,13 @@ class CreatePointItemComponentWithEvent extends Component {
     this.onChangeEvents = this.onChangeEvents.bind(this);
     this.onChangeUsers = this.onChangeUsers.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.onUpdate = this.onUpdate.bind(this);
   }
 
   componentWillMount() {
     EventStore.addChangeListener(this.onChangeEvents);
     UserStore.addChangeListener(this.onChangeUsers);
+    PointStore.addUpdateListener(this.onUpdate);
   }
 
   componentDidMount() {
@@ -46,6 +50,7 @@ class CreatePointItemComponentWithEvent extends Component {
   componentWillUnmount() {
     EventStore.removeChangeListener(this.onChangeEvents);
     UserStore.removeChangeListener(this.onChangeUsers);
+    PointStore.removeUpdateListener(this.onUpdate);
   }
 
   onChangeEvents() {
@@ -66,6 +71,10 @@ class CreatePointItemComponentWithEvent extends Component {
     this.setState({
       currentSelect: e.target.value
     });
+  }
+
+  onUpdate() {
+    browserHistory.push('/');
   }
 
   onSubmit(e) {

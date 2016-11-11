@@ -45,7 +45,7 @@ export default {
     if(!_event.name || !_event.date) {
       AppDispatcher.dispatch({
         actionType: EventConstants.CREATE_EVENT_ERROR,
-        message: "Invalid Parameters for Event Creation."
+        message: 'Invalid Parameters for Event Creation.'
       });
     } else {
       EventsAPI

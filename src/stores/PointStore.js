@@ -3,10 +3,10 @@ import PointConstants from '../constants/PointConstants';
 import { EventEmitter } from 'events';
 
 const CHANGE_EVENT = 'change';
+const UPDATE_EVENT = 'update';
 
 let _points = [];
 let _point_items = {};
-let _point_user = {};
 
 function setPoints(points) {
   _points = points;
@@ -23,12 +23,24 @@ class PointStoreClass extends EventEmitter {
     this.emit(CHANGE_EVENT)
   }
 
+  emitUpdate() {
+    this.emit(UPDATE_EVENT)
+  }
+
   addChangeListener(callback) {
     this.on(CHANGE_EVENT, callback)
   }
 
   removeChangeListener(callback) {
     this.removeListener(CHANGE_EVENT, callback)
+  }
+
+  addUpdateListener(callback) {
+    this.on(UPDATE_EVENT, callback);
+  }
+
+  removeUpdateListener(callback) {
+    this.removeListener(UPDATE_EVENT, callback);
   }
 
   getPoints() {
@@ -68,6 +80,13 @@ PointStore.dispatchToken = AppDispatcher.register(action => {
     case PointConstants.RECIEVE_POINTS_ITEM_ERROR:
       alert(action.message);
       PointStore.emitChange();
+      break;
+
+    case PointConstants.SUBMIT_POINTS:
+      PointStore.emitUpdate();
+      break;
+    case PointConstants.SUBMIT_POINTS_ERROR:
+      alert(action.message);
       break;
 
     default:

@@ -16,7 +16,6 @@ function setEvents(events) {
 function addEvent(event_) {
   _events.push(event_);
   _create_id = event_.id;
-  console.log(_create_id);
 }
 
 function setEvent(event_) {

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { ListGroupItem } from 'react-bootstrap';
-import { Link } from 'react-router';
 
 import UserActions from '../actions/UserActions';
 

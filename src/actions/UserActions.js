@@ -47,7 +47,8 @@ export default {
             UsersAPI.updateUser('https://tkezm.auth0.com/api/v2/users', user.user_id, user.app_metadata.roles,response.token)
             .then(response => {
               AppDispatcher.dispatch({
-                actionType: UserConstants.SUBMIT_USERS_STATUS
+                actionType: UserConstants.SUBMIT_USERS_STATUS,
+                response: response
               });
             })
             .catch(message => {
@@ -73,7 +74,10 @@ export default {
       .then(response => {
         UsersAPI.updateUser('https://tkezm.auth0.com/api/v2/users', user_id, roles,response.token)
         .then(users => {
-
+          AppDispatcher.dispatch({
+            actionType: UserConstants.SUBMIT_USERS_STATUS,
+            users: users
+          });
         })
         .catch(message => {
           AppDispatcher.dispatch({
