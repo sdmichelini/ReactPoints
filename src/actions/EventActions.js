@@ -21,6 +21,23 @@ export default {
       });
   },
 
+  recieveEvents: (count) => {
+    EventsAPI
+      .getEvents('http://localhost:3001/api/events',count)
+      .then(events => {
+        AppDispatcher.dispatch({
+          actionType: EventConstants.RECIEVE_EVENTS,
+          events: events
+        });
+      })
+      .catch(message => {
+        AppDispatcher.dispatch({
+          actionType: EventConstants.RECIEVE_EVENTS_ERROR,
+          message: message
+        });
+      });
+  },
+
   getEvent: (id) => {
     EventsAPI
       .getEvent('http://localhost:3001/api/events/' + id)

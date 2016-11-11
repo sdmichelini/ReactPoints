@@ -37,7 +37,12 @@ class EventsComponent extends Component {
   }
 
   componentDidMount() {
-    EventActions.recieveEvents();
+    if(this.props.count) {
+      EventActions.recieveEvents(this.props.count);
+    } else {
+      EventActions.recieveEvents();
+    }
+
   }
 
   componentWillUnmount() {

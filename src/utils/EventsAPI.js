@@ -18,6 +18,17 @@ export default {
     });
   },
 
+  getEvents: (url, count) => {
+    return new Promise((resolve, reject) => {
+      request
+        .get(url+'?count='+String(count))
+        .end((err, response) => {
+          if (err) reject(err);
+          resolve(JSON.parse(response.text));
+        })
+    });
+  },
+
   getEvent: (url) => {
     return new Promise((resolve, reject) => {
       request

@@ -6,11 +6,7 @@ class SidebarComponent extends Component {
   render() {
     return (
       <div>
-        <Events
-          days={5}/>
-        <Link to='/'>
-          <h2>Users</h2>
-        </ Link>
+        <Events count={5} />
       </div>
 
     );
