@@ -10,6 +10,7 @@ import PointDetail from './components/PointDetail';
 import CreateEvent from './components/CreateEvent';
 import CreatePointItem from './components/CreatePointItem';
 import CreatePointItemWithEvent from './components/CreatePointItemWithEvent';
+import Dashboard from './components/Dashboard';
 import User from './components/Users';
 
 import AuthUtils from './utils/AuthUtils.js';
@@ -34,6 +35,7 @@ class Root extends Component {
           <Route path='/create/event' component={CreateEvent} onEnter={AuthUtils.requireAdmin}/>
           <Route path='/create/point' component={CreatePointItem} onEnter={AuthUtils.requireAdmin}/>
           <Route path='/create/point/:id' component={CreatePointItemWithEvent} onEnter={AuthUtils.requireAdmin}/>
+          <Route path='/dashboard' component={Dashboard} onEnter={AuthUtils.requireAdmin}/>
         </Route>
       </Router>
     );

@@ -21,7 +21,7 @@ class IndexComponent extends Component {
   constructor() {
     super();
     this.state = {
-      points:[]
+      points:{}
     }
 
     this.onChange = this.onChange.bind(this);
@@ -39,6 +39,8 @@ class IndexComponent extends Component {
     PointStore.removeChangeListener(this.onChange);
   }
 
+  
+
   onChange() {
     this.setState({
       points: PointStore.getPoints()
@@ -47,21 +49,26 @@ class IndexComponent extends Component {
 
   render() {
     let eventListItems;
-    if (this.state.points) {
+    if (this.state.points && (Object.keys(this.state.points).length > 0)) {
       // Map over the contacts and get an element for each of them
+
+      console.log(this.state.points);
       eventListItems = [];
       for(let key in this.state.points) {
         eventListItems.push(getEventListItem(key, this.state.points[key]));
       }
+      eventListItems = (
+        <ListGroup>
+          {eventListItems}
+        </ListGroup>
+      );
     } else {
       eventListItems = 'No points yet.';
     }
     return (
       <div>
         <h2>Points</h2>
-        <ListGroup>
-          {eventListItems}
-        </ListGroup>
+        {eventListItems}
       </div>
     );
   }

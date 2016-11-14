@@ -69,7 +69,9 @@ class CreateEventComponent extends Component {
     });
   }
   handleRequiredChange(event) {
-
+    this.setState({
+      required: event.target.checked
+    });
   }
   handleDateChange(event) {
     this.setState({
@@ -119,7 +121,7 @@ class CreateEventComponent extends Component {
           </div>
           <div className="form-check">
             <label className="form-check-label">
-              <input className="form-check-input" type="checkbox"/> Required?
+              <input className="form-check-input" type="checkbox" checked={this.state.required} onChange={this.handleRequiredChange}/> Required?
             </label>
           </div>
           <button type='submit' className='btn btn-primary' >Submit</button>

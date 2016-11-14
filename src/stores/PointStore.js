@@ -5,7 +5,7 @@ import { EventEmitter } from 'events';
 const CHANGE_EVENT = 'change';
 const UPDATE_EVENT = 'update';
 
-let _points = [];
+let _points = {};
 let _point_items = {};
 
 function setPoints(points) {
