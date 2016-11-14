@@ -5,7 +5,6 @@ import { Link } from 'react-router';
 class PointListItem extends Component {
   render() {
     const { point } = this.props;
-    console.log(point);
     return (
       <ListGroupItem>
         <h4>

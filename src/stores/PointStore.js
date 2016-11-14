@@ -89,6 +89,39 @@ PointStore.dispatchToken = AppDispatcher.register(action => {
       alert(action.message);
       break;
 
+    case PointConstants.DELETE_POINT_ITEM:
+      let items = _point_items.items;
+      let new_items = [];
+      for(let item in items.items) {
+        if(item.id == action.id) {
+          continue;
+        } else {
+          new_items.push(item);
+        }
+      }
+      _point_items.items = new_items;
+      PointStore.emitChange();
+      break;
+  case PointConstants.DELETE_POINT_ITEM_ERROR:
+    alert(action.message);
+    break;
+
+  case PointConstants.UPDATE_POINT_ITEM:
+    let items2 = _point_items.items;
+    let new_items2 = [];
+    for(let item in items2.items) {
+      if(item.id == action.id) {
+        item.points = action.points;
+      }
+      new_items2.push(item);
+    }
+    _point_items.items = new_items2;
+    PointStore.emitChange();
+    break;
+  case PointConstants.UPDATE_POINT_ITEM_ERROR:
+    alert(action.message);
+    break;
+
     default:
   }
 

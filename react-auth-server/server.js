@@ -133,7 +133,6 @@ app.post('/api/events', authCheck, checkAdmin, jsonParser, (req, res) => {
       }
       res.status(201);//HTTP Created
       let event_result = {id: result.ops[0]._id, name: event_.name, type: event_.type, required: event_.required, when: event_.when,points_present: event_.points_present, points_missed: event_.points_missed};
-      console.log(result);
       res.json({message:'Success.', _event: event_result});
     });
 
@@ -194,12 +193,59 @@ app.post('/api/points', authCheck, checkAdmin, jsonParser, (req, res) => {
           if (err) {
             res.status(500);
             res.json({message:'Database Error.'});
-            return console.log(err)
+            return console.log(err);
           }
           res.status(201);//HTTP Created
           res.json({message:'Success.'});
           calculatePoints();
         });
+      }
+    });
+  }
+});
+
+//Update Points Item
+app.put('/api/points/:id', authCheck, checkAdmin, jsonParser, (req, res) => {
+  if(!req.params.id || (req.params.id.length != 24)) {
+    res.status(400);
+    res.json({message: 'Invalid Point Item ID.'});
+    return console.log('Invalid Point Item ID.');
+  } else if(req.body.points === undefined) {
+    res.status(400);
+    res.json({message: 'Invalid Point Item Point Count.'});
+    return console.log('Invalid Point Item Point Count.');
+  } else {
+    let obj_id = new ObjectId(req.params.id);
+    db.collection('points').update({_id: obj_id}, {$set: {points:Number(req.body.points)}},(err, count, result) => {
+      if(err) {
+        res.status(500);
+        res.json({message:'Database Error.'});
+        return console.log(err);
+      } else {
+        res.status(200);
+        res.json({message:'Update Successful.'});
+        calculatePoints();
+      }
+    });
+  }
+});
+//Delete Points Item
+app.delete('/api/points/:id', authCheck, checkAdmin, jsonParser, (req, res) => {
+  if(!req.params.id || (req.params.id.length != 24)) {
+    res.status(400);
+    res.json({message: 'Invalid Point Item ID.'});
+    return console.log('Invalid Point Item ID.');
+  } else {
+    let obj_id = new ObjectId(req.params.id);
+    db.collection('points').remove({_id: obj_id},(err, count) => {
+      if(err) {
+        res.status(500);
+        res.json({message:'Database Error.'});
+        return console.log(err);
+      } else {
+        res.status(200);
+        res.json({message:'Delete Successful.'});
+        calculatePoints();
       }
     });
   }
@@ -224,7 +270,6 @@ app.get('/api/users/:user_id/points', (req, res) => {
       items2.push({ event: item._event, points: item.points, id: item._id});
     }
     let response = {user:{name: name, id: user_id}, items: items2};
-    console.log(response);
     res.json(response);
   });
 });

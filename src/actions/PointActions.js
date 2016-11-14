@@ -36,6 +36,45 @@ export default {
         });
       })
   },
+  deletePoint: (point_id) => {
+    if(!point_id) {
+      return;
+    } else {
+      PointsAPI.deletePoint('http://localhost:3001/api/points/'+point_id)
+      .then(response => {
+        AppDispatcher.dispatch({
+          actionType: PointConstants.DELETE_POINT_ITEM,
+          id: point_id
+        });
+      })
+      .catch(message => {
+        AppDispatcher.dispatch({
+          actionType: PointConstants.DELETE_POINT_ITEM_ERROR,
+          message: message
+        });
+      });
+    }
+  },
+  updatePoint: (point_id, points) => {
+    if(!point_id) {
+      return;
+    } else {
+      PointsAPI.updatePoint('http://localhost:3001/api/points/'+point_id, points)
+      .then(response => {
+        AppDispatcher.dispatch({
+          actionType: PointConstants.UPDATE_POINT_ITEM,
+          id: point_id,
+          points: points
+        });
+      })
+      .catch(message => {
+        AppDispatcher.dispatch({
+          actionType: PointConstants.UPDATE_POINT_ITEM_ERROR,
+          message: message
+        });
+      });
+    }
+  },
   submitPointsForEvent: (event_id, users) => {
     if(!Array.isArray(users)) {
       AppDispatcher.dispatch({

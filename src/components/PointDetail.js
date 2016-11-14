@@ -20,7 +20,7 @@ class PointDetailComponent extends Component {
   constructor() {
     super();
     this.state = {
-      point_items: []
+      point_items: {}
     }
     this.onChange = this.onChange.bind(this);
   }
@@ -52,7 +52,7 @@ class PointDetailComponent extends Component {
   render() {
     let pointListItems;
     let user;
-    if (this.state.point_items.items) {
+    if (this.state.point_items && this.state.point_items.items) {
       // Map over the contacts and get an element for each of them
       pointListItems = this.state.point_items.items.map(point_item => getPointListItem(point_item));
       user = this.state.point_items.user;

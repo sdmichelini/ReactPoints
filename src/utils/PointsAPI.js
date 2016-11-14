@@ -30,6 +30,32 @@ export default {
     });
   },
 
+  deletePoint: (url) => {
+    return new Promise((resolve, reject) => {
+      request
+        .delete(url)
+        .set('Authorization', 'Bearer ' + AuthStore.getJwt())
+        .end((err, response) => {
+          if (err) reject(err);
+          resolve(JSON.parse(response.text));
+        })
+    });
+  },
+
+  updatePoint: (url, points) => {
+    return new Promise((resolve, reject) => {
+      request
+        .put(url)
+        .type('json')
+        .send({points: points})
+        .set('Authorization', 'Bearer ' + AuthStore.getJwt())
+        .end((err, response) => {
+          if (err) reject(err);
+          resolve(JSON.parse(response.text));
+        })
+    });
+  },
+
   submitPoints: (url, data) => {
     return new Promise((resolve, reject) => {
       request
