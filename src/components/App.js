@@ -20,7 +20,7 @@ class AppComponent extends Component {
         <Header lock={this.lock}></Header>
         <Grid>
           <Row>
-            <Col xs={12} md={3}>
+            <Col xs={0} md={3}>
               <Sidebar />
             </Col>
             <Col xs={12} md={9}>

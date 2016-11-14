@@ -40,13 +40,17 @@ class HeaderComponent extends Component {
             <a href="/">React Points</a>
           </Navbar.Brand>
         </Navbar.Header>
-        <Nav>
-          { !this.state.authenticated ? (
-            <NavItem onClick={this.login}>Login</NavItem>
-          ) : (
-            <NavItem onClick={this.logout}>Logout</NavItem>
-          )}
-        </Nav>
+
+        { !this.state.authenticated ? (
+          <Nav>
+          <NavItem onClick={this.login}>Login</NavItem>
+          </Nav>
+        ) : (
+          <Nav>
+            <NavItem onClick={this.logout} eventKey={1}>Logout</NavItem>
+            <NavItem href={'/events'} eventKey={2}>Events</NavItem>
+          </Nav>
+        )}
       </Navbar>
     );
   }

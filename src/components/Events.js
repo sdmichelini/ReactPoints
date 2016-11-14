@@ -63,7 +63,7 @@ class EventsComponent extends Component {
     }
     return (
       <div>
-        <h3>Recent Events</h3>
+        <h3>Events</h3>
         <ListGroup>
           {eventListItems}
         </ListGroup>
