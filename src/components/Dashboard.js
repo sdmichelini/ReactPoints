@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router';
 
 const text = `
   Welcome to the admin dashboard.
@@ -17,8 +18,8 @@ class DashboardComponent extends Component {
         <p>
           {text}
         </p>
-        <a style={buttonStyle} className='btn btn-primary' href='/create/event'>Create Event</a>
-        <a style={buttonStyle} className='btn btn-primary' href='/create/point'>Enter Points for Event</a>
+        <Link style={buttonStyle} className='btn btn-primary' to={'/create/event'}>Create Event</Link>
+        <Link style={buttonStyle} className='btn btn-primary' to={'/create/point'}>Enter Points for Event</Link>
       </div>
     );
   }
