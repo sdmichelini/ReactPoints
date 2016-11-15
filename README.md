@@ -14,6 +14,7 @@ A point item is directly linked to an event and is the amount of points a person
 
 ## To-Do ##
 
-- [ ] Make new event auto redirect to event creation
+- [x] Make new event auto redirect to event creation
 - [ ] Make variable point creation
 - [ ] Caching(HTTP and Database)
+- [ ] Start looking at Heroku
