@@ -74,6 +74,36 @@ class UserPointListItem extends Component {
     PointActions.deletePoint(point.id);
   }
 
+  getStyleForPoints(points) {
+    let style = {};
+    if(points > 0) {
+      style= {
+        backgroundColor: 'green',
+        color: 'white'
+      };
+    } else if(points < 0) {
+      style= {
+        backgroundColor: 'red',
+        color: 'white'
+      };
+    }
+    return style;
+  }
+
+  getLinkStyleForPoints(points) {
+    let style = {};
+    if(points > 0) {
+      style= {
+        color: 'white'
+      };
+    } else if(points < 0) {
+      style= {
+        color: 'white'
+      };
+    }
+    return style;
+  }
+
   render() {
     const { point } = this.props;
     let editPanel;
@@ -95,9 +125,9 @@ class UserPointListItem extends Component {
       editPanel = (<span></span>);
     }
     return (
-      <div className='list-group-item'>
+      <div className='list-group-item' style={this.getStyleForPoints(point.points)}>
         <h4>
-          <Link to={'/events/'+point.event.id}>
+          <Link to={'/events/'+point.event.id} style={this.getLinkStyleForPoints(point.points)}>
             {point.event.name}:
           </Link>
           <div className='pull-right'>
