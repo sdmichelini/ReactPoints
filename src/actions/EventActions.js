@@ -25,7 +25,7 @@ export default {
 
   recieveEvents: (count) => {
     EventsAPI
-      .getEvents((URL+'/api/events',count)
+      .getEvents(URL+'/api/events',count)
       .then(events => {
         AppDispatcher.dispatch({
           actionType: EventConstants.RECIEVE_EVENTS,
