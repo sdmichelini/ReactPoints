@@ -6,6 +6,7 @@ const CHANGE_EVENT = 'change';
 const UPDATE_EVENT = 'update';
 
 let _points = {};
+let _sorted_points = [];
 let _point_items = {};
 
 function setPoints(points) {
@@ -14,6 +15,10 @@ function setPoints(points) {
 
 function setPointItems(point_items) {
   _point_items = point_items;
+}
+
+function setSortedPoints(sorted_points) {
+  _sorted_points = sorted_points;
 }
 
 
@@ -47,6 +52,10 @@ class PointStoreClass extends EventEmitter {
     return _points;
   }
 
+  getSortedPoints() {
+    return _sorted_points;
+  }
+
   getPointsItem() {
     return _point_items;
   }
@@ -62,6 +71,22 @@ PointStore.dispatchToken = AppDispatcher.register(action => {
   switch(action.actionType) {
     case PointConstants.RECIEVE_POINTS:
       setPoints(action.points);
+      let points = action.points;
+      let sortPoints = [];
+      for (let key in points) {
+        points[key].id = key;
+        sortPoints.push(points[key]);
+      }
+      sortPoints.sort((a ,b ) => {
+        if(a.points > b.points) {
+          return -1;
+        } else if (b.points > a.points) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+      setSortedPoints(sortPoints);
       // We need to call emitChange so the event listener
       // knows that a change has been made
       PointStore.emitChange();

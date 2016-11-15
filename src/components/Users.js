@@ -68,7 +68,6 @@ class UserComponent extends Component {
     let userListItems;
     if (this.state.users) {
       // Map over the contacts and get an element for each of them
-      console.log(this.state.users);
       userListItems = this.state.users.map(user => getUserListItem(user));
     }
     return (

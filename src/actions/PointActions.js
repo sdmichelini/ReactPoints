@@ -44,7 +44,8 @@ export default {
       .then(response => {
         AppDispatcher.dispatch({
           actionType: PointConstants.DELETE_POINT_ITEM,
-          id: point_id
+          id: point_id,
+          response: response
         });
       })
       .catch(message => {
@@ -64,7 +65,8 @@ export default {
         AppDispatcher.dispatch({
           actionType: PointConstants.UPDATE_POINT_ITEM,
           id: point_id,
-          points: points
+          points: points,
+          response: response
         });
       })
       .catch(message => {

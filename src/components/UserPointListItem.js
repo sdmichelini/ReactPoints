@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { ListGroupItem } from 'react-bootstrap';
 import { Link } from 'react-router';
 import AuthStore from '../stores/AuthStore';
 import PointActions from '../actions/PointActions';
@@ -26,7 +25,7 @@ class UserPointListItem extends Component {
     this.onValueChange = this.onValueChange.bind(this);
   }
 
-  componentDidMount(nextProps) {
+  componentDidMount() {
     const { point } = this.props;
     this.setState({
       points: point.points

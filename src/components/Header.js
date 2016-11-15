@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Nav, Navbar, NavItem, Header, Brand } from 'react-bootstrap';
+import { Nav, Navbar, NavItem } from 'react-bootstrap';
 import AuthActions from '../actions/AuthActions';
 import AuthStore from '../stores/AuthStore';
 // import AuthActions from '../actions/AuthActions';

@@ -70,7 +70,6 @@ class CreatePointItemComponentWithEvent extends Component {
   }
 
   onChangeSelect(e) {
-    console.log(e.target.value);
     this.setState({
       currentSelect: e.target.value
     });

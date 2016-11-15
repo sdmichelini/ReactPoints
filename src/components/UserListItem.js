@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { ListGroupItem } from 'react-bootstrap';
-import { Link } from 'react-router';
 import ListItem from '../styles/List.css';
 import  UserActions  from '../actions/UserActions';
 
