@@ -99,6 +99,13 @@ export default {
       user_id: user_id,
       selection: selection
     });
+  },
+  updateUserPoints: (user_id, points) => {
+    AppDispatcher.dispatch({
+      actionType: UserConstants.UPDATE_USER_POINTS,
+      user_id: user_id,
+      points: points
+    });
   }
 
 }

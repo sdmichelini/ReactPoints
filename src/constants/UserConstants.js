@@ -6,5 +6,6 @@ export default keyMirror({
   SET_USER_STATUS: null,
   SUBMIT_USERS_STATUS: null,
   SUBMIT_USERS_STATUS_ERROR: null,
-  UPDATE_USER_SELECTION: null
+  UPDATE_USER_SELECTION: null,
+  UPDATE_USER_POINTS: null
 });

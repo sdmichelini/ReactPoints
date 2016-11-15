@@ -13,11 +13,12 @@ import PointStore from '../stores/PointStore';
 
 import { ListGroup } from 'react-bootstrap';
 
-function getUserOptions(user) {
+function getUserOptions(user, customPoint) {
   return (
     <UserOptionsListItem
       key={user.id}
       user={user}
+      customPoint={customPoint}
     />
   )
 }
@@ -28,12 +29,14 @@ class CreatePointItemComponentWithEvent extends Component {
     super();
     this.state = {
       _event: {},
-      users: []
+      users: [],
+      customPoint: false
     }
     this.onChangeEvents = this.onChangeEvents.bind(this);
     this.onChangeUsers = this.onChangeUsers.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.onUpdate = this.onUpdate.bind(this);
+    this.onToggle = this.onToggle.bind(this);
   }
 
   componentWillMount() {
@@ -87,10 +90,17 @@ class CreatePointItemComponentWithEvent extends Component {
     let users = this.state.users;
     PointActions.submitPointsForEvent(event_id, users);
   }
+
+  onToggle(e) {
+    this.setState({
+      customPoint: e.target.checked
+    });
+  }
+
   render() {
     let userListItems;
     if(this.state.users) {
-      userListItems = this.state.users.map(user => getUserOptions(user));
+      userListItems = this.state.users.map(user => getUserOptions(user, this.state.customPoint));
     } else {
       userListItems = 'No Users in System.';
     }
@@ -103,6 +113,11 @@ class CreatePointItemComponentWithEvent extends Component {
         <h1>Create Point Item</h1>
         <form onSubmit={this.onSubmit}>
           <h3>{eventName}</h3>
+          <div className="form-check">
+            <label className="form-check-label">
+              <input className="form-check-input" type="checkbox" checked={this.state.customPoint} onChange={this.onToggle}/> Custom?
+            </label>
+          </div>
           <h3>Users</h3>
           <ListGroup>
             {userListItems}

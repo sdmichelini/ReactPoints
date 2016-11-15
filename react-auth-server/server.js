@@ -176,6 +176,9 @@ app.post('/api/points', authCheck, checkAdmin, jsonParser, (req, res) => {
             case 2: //Absent and Excused
               points = 0;
               break
+            case 4:
+              points = user.points || 0;
+              break
             default:
               points = 0;
               break

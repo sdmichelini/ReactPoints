@@ -11,7 +11,7 @@ function setUsers(users) {
   _users = users;
   _users_selection = [];
   for(let user of users) {
-      _users_selection.push({name: user.name,id: user.user_id,selection: 3});
+      _users_selection.push({name: user.name,id: user.user_id,selection: 3, points: 0});
     }
 }
 
@@ -125,6 +125,17 @@ UserStore.dispatchToken = AppDispatcher.register(action => {
         }
       }
       setUsersSelection(users_selection);
+      UserStore.emitChange();
+      break
+    case UserConstants.UPDATE_USER_POINTS:
+      let users_selection2 = _users_selection;
+      for(let user of users_selection2) {
+        if(user.id == action.user_id) {
+          user.points = action.points;
+          break;
+        }
+      }
+      setUsersSelection(users_selection2);
       UserStore.emitChange();
       break
 
