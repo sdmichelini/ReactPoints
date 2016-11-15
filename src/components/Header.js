@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router';
 import { Nav, Navbar, NavItem } from 'react-bootstrap';
 import AuthActions from '../actions/AuthActions';
 import AuthStore from '../stores/AuthStore';
@@ -52,16 +53,16 @@ class HeaderComponent extends Component {
     if(this.state.authenticated && this.state.admin) {
       content = (
         <Nav>
-          <NavItem onClick={this.logout} eventKey={1}>Logout</NavItem>
-          <NavItem href={'/events'} eventKey={2}>Events</NavItem>
-          <NavItem href={'/dashboard'} eventKey={2}>Dashboard</NavItem>
+          <NavItem onClick={this.logout}>Logout</NavItem>
+          <li role='presentation'><Link to={'/events'}>Events</Link></li>
+          <li role='presentation'><Link to={'/dashboard'}>Dashboard</Link></li>
         </Nav>
       );
     } else if(this.state.authenticated) {
       content = (
         <Nav>
           <NavItem onClick={this.logout} eventKey={1}>Logout</NavItem>
-          <NavItem href={'/events'} eventKey={2}>Events</NavItem>
+          <li role='presentation'><Link to={'/events'}>Events</Link></li>
         </Nav>
       );
     } else {
@@ -75,7 +76,7 @@ class HeaderComponent extends Component {
       <Navbar>
         <Navbar.Header>
           <Navbar.Brand>
-            <a href="/">React Points</a>
+            <Link to={'/'}>Points</Link>
           </Navbar.Brand>
         </Navbar.Header>
         {content}
