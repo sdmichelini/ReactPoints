@@ -31,7 +31,7 @@ class Root extends Component {
           <Route path='/events/:id' component={EventDetail} onEnter={AuthUtils.requireAuth}/>
           <Route path='/events' component={Events} onEnter={AuthUtils.requireAuth}/>
           <Route path='/users/:id/points' component={PointDetail} onEnter={AuthUtils.requireAuth}/>
-          <Route path='/users' component={User} onEnter={AuthUtils.requireAuth}/>
+          <Route path='/users' component={User} onEnter={AuthUtils.requireAdmin}/>
           <Route path='/create/event' component={CreateEvent} onEnter={AuthUtils.requireAdmin}/>
           <Route path='/create/point' component={CreatePointItem} onEnter={AuthUtils.requireAdmin}/>
           <Route path='/create/point/:id' component={CreatePointItemWithEvent} onEnter={AuthUtils.requireAdmin}/>
