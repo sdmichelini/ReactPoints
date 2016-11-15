@@ -2,11 +2,14 @@ import AppDispatcher from '../dispatcher/AppDispatcher';
 import PointConstants from '../constants/PointConstants';
 import PointsAPI from '../utils/PointsAPI';
 
+const URL_USERS = 'https://whispering-river-73731.herokuapp.com/api/users/';
+const URL_POINTS = 'https://whispering-river-73731.herokuapp.com/api/points';
+
 export default {
 
   recievePoints: () => {
     PointsAPI
-      .getPoints('http://localhost:3001/api/points')
+      .getPoints(URL_POINTS)
       .then(points => {
         AppDispatcher.dispatch({
           actionType: PointConstants.RECIEVE_POINTS,
@@ -22,7 +25,7 @@ export default {
   },
   getPointsItemForUser: (user_id) => {
     PointsAPI
-      .getPointsForUser('http://localhost:3001/api/users/'+user_id+'/points')
+      .getPointsForUser(URL_USERS+user_id+'/points')
       .then(user_points => {
         AppDispatcher.dispatch({
           actionType: PointConstants.RECIEVE_POINTS_ITEM,
@@ -40,7 +43,7 @@ export default {
     if(!point_id) {
       return;
     } else {
-      PointsAPI.deletePoint('http://localhost:3001/api/points/'+point_id)
+      PointsAPI.deletePoint(URL_POINTS+point_id)
       .then(response => {
         AppDispatcher.dispatch({
           actionType: PointConstants.DELETE_POINT_ITEM,
@@ -60,7 +63,7 @@ export default {
     if(!point_id) {
       return;
     } else {
-      PointsAPI.updatePoint('http://localhost:3001/api/points/'+point_id, points)
+      PointsAPI.updatePoint(URL_POINTS+point_id, points)
       .then(response => {
         AppDispatcher.dispatch({
           actionType: PointConstants.UPDATE_POINT_ITEM,
@@ -86,7 +89,7 @@ export default {
     } else {
       let data = {event_id: event_id, users: users};
       PointsAPI
-        .submitPoints('http://localhost:3001/api/points', data)
+        .submitPoints(URL_POINTS, data)
         .then(response => {
           AppDispatcher.dispatch({
             actionType: PointConstants.SUBMIT_POINTS,

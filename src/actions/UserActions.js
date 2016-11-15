@@ -2,11 +2,13 @@ import AppDispatcher from '../dispatcher/AppDispatcher';
 import UserConstants from '../constants/UserConstants';
 import UsersAPI from '../utils/UsersAPI';
 
+const AUTH_URL = 'https://whispering-river-73731.herokuapp.com/api/auth';
+
 export default {
 
   recieveUsers: () => {
     UsersAPI
-      .getToken('http://localhost:3001/api/auth')
+      .getToken(AUTH_URL)
       .then(response => {
         UsersAPI.getUsers('https://tkezm.auth0.com/api/v2/users',response.token)
         .then(users => {
@@ -40,7 +42,7 @@ export default {
 
   updateUsersStatus: (users) => {
     UsersAPI
-      .getToken('http://localhost:3001/api/auth')
+      .getToken(AUTH_URL)
       .then(response => {
         for(let user of users) {
           if(user.is_changed) {
@@ -70,7 +72,7 @@ export default {
 
   updateUserStatus: (user_id, roles) => {
     UsersAPI
-      .getToken('http://localhost:3001/api/auth')
+      .getToken(AUTH_URL)
       .then(response => {
         UsersAPI.updateUser('https://tkezm.auth0.com/api/v2/users', user_id, roles,response.token)
         .then(users => {

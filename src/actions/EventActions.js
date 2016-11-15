@@ -2,11 +2,13 @@ import AppDispatcher from '../dispatcher/AppDispatcher';
 import EventConstants from '../constants/EventConstants';
 import EventsAPI from '../utils/EventsAPI';
 
+const URL = 'https://whispering-river-73731.herokuapp.com';
+
 export default {
 
   recieveEvents: () => {
     EventsAPI
-      .getEvents('http://localhost:3001/api/events')
+      .getEvents(URL+'/api/events')
       .then(events => {
         AppDispatcher.dispatch({
           actionType: EventConstants.RECIEVE_EVENTS,
@@ -23,7 +25,7 @@ export default {
 
   recieveEvents: (count) => {
     EventsAPI
-      .getEvents('http://localhost:3001/api/events',count)
+      .getEvents((URL+'/api/events',count)
       .then(events => {
         AppDispatcher.dispatch({
           actionType: EventConstants.RECIEVE_EVENTS,
@@ -40,7 +42,7 @@ export default {
 
   getEvent: (id) => {
     EventsAPI
-      .getEvent('http://localhost:3001/api/events/' + id)
+      .getEvent(URL+'/api/events/' + id)
       .then(event_ => {
         AppDispatcher.dispatch({
           actionType: EventConstants.RECIEVE_EVENT,
@@ -66,7 +68,7 @@ export default {
       });
     } else {
       EventsAPI
-        .createEvent('http://localhost:3001/api/events', _event)
+        .createEvent(URL+'/api/events', _event)
         .then(response => {
           AppDispatcher.dispatch({
             actionType: EventConstants.CREATE_EVENT_SUCCESS,
