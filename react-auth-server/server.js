@@ -11,6 +11,8 @@ const bodyParser = require('body-parser');
 const MongoClient = require('mongodb').MongoClient;
 const ObjectId = require('mongodb').ObjectID;
 
+let port = process.env.PORT || 3001;
+
 app.use(cors());
 
 // create application/json parser
@@ -282,6 +284,6 @@ MongoClient.connect(process.env.MONGO_URL, (err, database) => {
   if(err) return console.log(err);
   db = database;
   calculatePoints();
-  app.listen(3001);
+  app.listen(port);
   console.log('Listening on http://localhost:3001');
 });
