@@ -13,6 +13,10 @@ const ObjectId = require('mongodb').ObjectID;
 
 let port = process.env.PORT || 3001;
 
+const path = require('path');
+app.use('/assets', express.static(path.join(__dirname, 'dist/assets')));
+app.use('/', express.static(path.join(__dirname, 'dist')));
+
 app.use(cors());
 
 // create application/json parser
@@ -27,6 +31,8 @@ const authCheck = jwt({
 });
 
 let db;
+let points_collection;
+let events_collection;
 
 var totals = {};
 
@@ -54,7 +60,7 @@ function checkAdmin(req, res, next) {
 */
 function calculatePoints() {
   let pointTotals = {};
-  db.collection('points').find().toArray((err, items) => {
+  points_collection.find().toArray((err, items) => {
     for(let item of items) {
       if(pointTotals[item.user_id]) {
         pointTotals[item.user_id].points = pointTotals[item.user_id].points + item.points;
@@ -69,7 +75,7 @@ function calculatePoints() {
 }
 
 app.get('/api/events', (req, res) => {
-  db.collection('events').find().toArray((err, events) => {
+  events_collection.find().toArray((err, events) => {
     if (err) {
       res.status(500);
       res.json({message:'Database Error.'});
@@ -89,7 +95,7 @@ app.get('/api/events/:id', authCheck, (req, res) => {
     return console.log('Invalid Event ID.');
   } else {
     let obj_id = new ObjectId(req.params.id);
-    db.collection('events').findOne({'_id':obj_id}, (err, event_) => {
+    events_collection.findOne({'_id':obj_id}, (err, event_) => {
       if(err) {
         res.status(500);
         res.json({message:'Database Error.'});
@@ -127,7 +133,7 @@ app.post('/api/events', authCheck, checkAdmin, jsonParser, (req, res) => {
       points_missed: req.body.missed
     };
     //Save it in the database
-    db.collection('events').save(event_, (err, result) => {
+    events_collection.save(event_, (err, result) => {
       if (err) {
         res.status(500);
         res.json({message:'Database Error.'});
@@ -154,7 +160,7 @@ app.post('/api/points', authCheck, checkAdmin, jsonParser, (req, res) => {
     res.json({message:'Missing users.'});
   } else {
     let obj_id = new ObjectId(req.body.event_id);
-    db.collection('events').findOne({_id: obj_id}, (err, _event)=>{
+    events_collection.findOne({_id: obj_id}, (err, _event)=>{
       if(err) {
         res.status(500);
         res.json({message:'Internal Server Error.'});
@@ -194,7 +200,7 @@ app.post('/api/points', authCheck, checkAdmin, jsonParser, (req, res) => {
           };
           items.push(item);
         }
-        db.collection('points').insert(items, (err, result) => {
+        points_collection.insert(items, (err, result) => {
           if (err) {
             res.status(500);
             res.json({message:'Database Error.'});
@@ -221,7 +227,7 @@ app.put('/api/points/:id', authCheck, checkAdmin, jsonParser, (req, res) => {
     return console.log('Invalid Point Item Point Count.');
   } else {
     let obj_id = new ObjectId(req.params.id);
-    db.collection('points').update({_id: obj_id}, {$set: {points:Number(req.body.points)}},(err, count, result) => {
+    points_collection.update({_id: obj_id}, {$set: {points:Number(req.body.points)}},(err, count, result) => {
       if(err) {
         res.status(500);
         res.json({message:'Database Error.'});
@@ -242,7 +248,7 @@ app.delete('/api/points/:id', authCheck, checkAdmin, jsonParser, (req, res) => {
     return console.log('Invalid Point Item ID.');
   } else {
     let obj_id = new ObjectId(req.params.id);
-    db.collection('points').remove({_id: obj_id},(err, count) => {
+    points_collection.remove({_id: obj_id},(err, count) => {
       if(err) {
         res.status(500);
         res.json({message:'Database Error.'});
@@ -258,7 +264,7 @@ app.delete('/api/points/:id', authCheck, checkAdmin, jsonParser, (req, res) => {
 
 app.get('/api/users/:user_id/points', (req, res) => {
   let user_id = req.params.user_id;
-  db.collection('points').find({user_id: user_id}).toArray((err, items) => {
+  points_collection.find({user_id: user_id}).toArray((err, items) => {
     if(err) {
       res.status(500);
       res.json({message:'Databse Error.'});
@@ -286,6 +292,8 @@ app.get('/api/auth', authCheck, checkAdmin, (req, res) => {
 MongoClient.connect(process.env.MONGO_URL, (err, database) => {
   if(err) return console.log(err);
   db = database;
+  points_collection = db.collection('points');
+  events_collection = db.collection('events');
   calculatePoints();
   app.listen(port);
   console.log('Listening on http://localhost:3001');
