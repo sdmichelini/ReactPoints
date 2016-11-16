@@ -37,7 +37,8 @@ let events_collection;
 var totals = {};
 
 const ALLOWED_CLIENTS = [
-  'auth0|5813aac8f1413bed0950e515'
+  'auth0|5813aac8f1413bed0950e515',
+  'auth0|582b89e18724638206744c82'
 ];
 
 function checkAdmin(req, res, next) {
