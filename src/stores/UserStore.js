@@ -75,7 +75,8 @@ UserStore.dispatchToken = AppDispatcher.register(action => {
     case UserConstants.RECIEVE_USERS:
       let verifiedUsers = [];
       for (let user of action.users) {
-        if(user.app_metadata.roles && (user.app_metadata.roles.indexOf('user') > -1)) {
+        //Verify that they are a user
+        if(user.app_metadata && user.app_metadata.roles && (user.app_metadata.roles.indexOf('user') > -1)) {
           verifiedUsers.push(user);
         }
       }
