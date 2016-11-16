@@ -2,8 +2,10 @@ import AppDispatcher from '../dispatcher/AppDispatcher';
 import PointConstants from '../constants/PointConstants';
 import PointsAPI from '../utils/PointsAPI';
 
-const URL_USERS = 'https://whispering-river-73731.herokuapp.com/api/users/';
-const URL_POINTS = 'https://whispering-river-73731.herokuapp.com/api/points';
+import {URL} from '../constants/UrlConstants';
+
+const URL_USERS = URL+'/api/users/';
+const URL_POINTS = URL+'/api/points';
 
 export default {
 

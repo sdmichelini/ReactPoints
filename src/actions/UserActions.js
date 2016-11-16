@@ -2,7 +2,9 @@ import AppDispatcher from '../dispatcher/AppDispatcher';
 import UserConstants from '../constants/UserConstants';
 import UsersAPI from '../utils/UsersAPI';
 
-const AUTH_URL = 'https://whispering-river-73731.herokuapp.com/api/auth';
+import {URL} from '../constants/UrlConstants';
+
+const AUTH_URL = URL+'/api/auth';
 
 export default {
 

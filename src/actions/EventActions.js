@@ -1,8 +1,9 @@
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import EventConstants from '../constants/EventConstants';
+import {URL} from '../constants/UrlConstants';
 import EventsAPI from '../utils/EventsAPI';
 
-const URL = 'https://whispering-river-73731.herokuapp.com';
+
 
 export default {
 

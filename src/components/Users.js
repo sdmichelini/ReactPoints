@@ -53,7 +53,7 @@ class UserComponent extends Component {
 
   onChange() {
     this.setState({
-      users: UserStore.getUsers()
+      users: UserStore.getFullUsers()
     });
   }
 

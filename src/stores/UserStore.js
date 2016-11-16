@@ -6,6 +6,7 @@ const CHANGE_EVENT = 'change';
 
 let _users = [];
 let _users_selection = [];
+let _full_users = [];
 
 function setUsers(users) {
   _users = users;
@@ -13,6 +14,10 @@ function setUsers(users) {
   for(let user of users) {
       _users_selection.push({name: user.name,id: user.user_id,selection: 3, points: 0});
     }
+}
+
+function setFullUsers(users) {
+  _full_users = users;
 }
 
 function setUsersSelection(users_selection) {
@@ -36,6 +41,10 @@ class UserStoreClass extends EventEmitter {
 
   getUsers() {
     return _users;
+  }
+
+  getFullUsers() {
+    return _full_users;
   }
 
   getUsersSelection() {
@@ -64,7 +73,14 @@ UserStore.dispatchToken = AppDispatcher.register(action => {
 
   switch(action.actionType) {
     case UserConstants.RECIEVE_USERS:
-      setUsers(action.users);
+      let verifiedUsers = [];
+      for (let user of action.users) {
+        if(user.app_metadata.roles && (user.app_metadata.roles.indexOf('user') > -1)) {
+          verifiedUsers.push(user);
+        }
+      }
+      setUsers(verifiedUsers);
+      setFullUsers(action.users);
       // We need to call emitChange so the event listener
       // knows that a change has been made
       UserStore.emitChange();
@@ -79,7 +95,7 @@ UserStore.dispatchToken = AppDispatcher.register(action => {
       let user_id = action.user_id;
       let status = action.status;
 
-      let users = _users;
+      let users = _full_users;
       for(let i = 0; i < users.length; i++) {
         if(user_id === users[i].user_id) {
           if(!users[i].app_metadata) {
