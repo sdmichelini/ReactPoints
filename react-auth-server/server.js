@@ -290,7 +290,7 @@ app.get('/api/auth', authCheck, checkAdmin, (req, res) => {
   res.json({message:"Token",token:process.env.AUTH0_TOKEN});
 });
 
-MongoClient.connect(process.env.MONGO_URL, (err, database) => {
+MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
   if(err) return console.log(err);
   db = database;
   points_collection = db.collection('points');
