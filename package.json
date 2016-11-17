@@ -7,6 +7,7 @@
     "clean": "rimraf dist/*",
     "copy": "copyfiles -f ./src/index.html ./src/favicon.ico ./react-auth-server/dist",
     "dist": "npm run copy & webpack --env=dist",
+    "deploy": "npm run dist && git push -u heroku master",
     "lint": "eslint ./src",
     "posttest": "npm run lint",
     "prod":"npm run dist && node ./react-auth-server/server.js",
@@ -15,7 +16,7 @@
     "release:patch": "npm version patch && npm publish && git push --follow-tags",
     "serve": "node server.js --env=dev",
     "serve:dist": "node server.js --env=dist",
-    "start": "node server.js --env=dev",
+    "start": "node ./react-auth-server/server.js",
     "test": "karma start",
     "test:watch": "karma start --autoWatch=true --singleRun=false"
   },
