@@ -298,7 +298,10 @@ app.get('/api/auth', authCheck, checkAdmin, (req, res) => {
 app.use('*', express.static(path.join(__dirname, 'dist')));
 
 MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
-  if(err) return console.log(err);
+  if(err){
+    console.log('MongoDB Error:');
+    return console.log(err);
+  }
   db = database;
   points_collection = db.collection('points');
   events_collection = db.collection('events');
