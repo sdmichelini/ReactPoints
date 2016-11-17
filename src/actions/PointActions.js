@@ -5,7 +5,7 @@ import PointsAPI from '../utils/PointsAPI';
 import {URL} from '../constants/UrlConstants';
 
 const URL_USERS = URL+'/api/users/';
-const URL_POINTS = URL+'/api/points';
+const URL_POINTS = URL+'/api/points/';
 
 export default {
 
