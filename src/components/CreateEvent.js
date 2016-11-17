@@ -4,6 +4,15 @@ import EventActions from '../actions/EventActions';
 import EventStore from '../stores/EventStore';
 import { browserHistory } from 'react-router';
 
+const COMMON_EVENTS = [
+  {name: 'Work Party', pFor: 3, pAgainst: 3, required: true},
+  {name: 'House Jobs', pFor: 3, pAgainst: 3, required: true},
+  {name: 'Wash/Wait-On', pFor: 3, pAgainst: 3, required: true},
+  {name: 'House Meeting', pFor: 5, pAgainst: 5, required: true},
+  {name: 'Ritual Meeting', pFor: 10, pAgainst: 5, required: true},
+  {name: 'Party Jobs', pFor: 3, pAgainst: 0, required: false}
+];
+
 class CreateEventComponent extends Component {
   constructor() {
     super();

@@ -15,7 +15,7 @@ let port = process.env.PORT || 3001;
 
 const path = require('path');
 app.use('/assets', express.static(path.join(__dirname, 'dist/assets')));
-app.use('/', express.static(path.join(__dirname, 'dist')));
+
 
 app.use(cors());
 
@@ -289,6 +289,8 @@ app.get('/api/users/:user_id/points', (req, res) => {
 app.get('/api/auth', authCheck, checkAdmin, (req, res) => {
   res.json({message:"Token",token:process.env.AUTH0_TOKEN});
 });
+
+app.use('*', express.static(path.join(__dirname, 'dist')));
 
 MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
   if(err) return console.log(err);
