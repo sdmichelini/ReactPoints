@@ -173,6 +173,8 @@ app.post('/api/points', authCheck, checkAdmin, jsonParser, (req, res) => {
         let items = [];
         for(let user of req.body.users) {
           let points;
+          //Do we need to add this item?
+          let need_push = true;
           switch(user.selection) {
             case 0: //Present
               points = _event.points_present;
@@ -187,19 +189,22 @@ app.post('/api/points', authCheck, checkAdmin, jsonParser, (req, res) => {
               points = user.points || 0;
               break
             default:
+              need_push = false;
               points = 0;
               break
           }
-          let item = {
-            user_id: user.id,
-            name: user.name,
-            _event: {
-              name: _event.name,
-              id: _event._id
-            },
-            points: points
-          };
-          items.push(item);
+          if(need_push) {
+            let item = {
+              user_id: user.id,
+              name: user.name,
+              _event: {
+                name: _event.name,
+                id: _event._id
+              },
+              points: points
+            };
+            items.push(item);
+          }
         }
         points_collection.insert(items, (err, result) => {
           if (err) {
