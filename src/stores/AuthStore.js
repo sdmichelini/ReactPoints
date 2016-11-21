@@ -1,6 +1,7 @@
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import AuthConstants from '../constants/AuthConstants';
 import { EventEmitter } from 'events';
+import jwt_decode from 'jwt-decode';
 
 const CHANGE_EVENT = 'change';
 
@@ -30,8 +31,16 @@ class AuthStoreClass extends EventEmitter {
   }
 
   isAuthenticated() {
-    if (localStorage.getItem('id_token')) {
-      return true;
+    let token = localStorage.getItem('id_token');
+    if (token) {
+      let user = jwt_decode(token);
+      if(!user) return false;
+      if(user.exp > (Math.floor(Date.now() / 1000))) {
+        return true;
+      } else {
+        removeUser();
+        return false;
+      }
     }
     return false;
   }
@@ -41,7 +50,7 @@ class AuthStoreClass extends EventEmitter {
   }
 
   isUser() {
-    if (localStorage.getItem('id_token')) {
+    if (this.isAuthenticated()) {
       let user = localStorage.getItem('profile');
       user = JSON.parse(user);
       if(user && user.app_metadata && user.app_metadata.roles) {
@@ -59,7 +68,7 @@ class AuthStoreClass extends EventEmitter {
   }
 
   isAdmin() {
-    if (localStorage.getItem('id_token')) {
+    if (this.isAuthenticated()) {
       let user = localStorage.getItem('profile');
       user = JSON.parse(user);
       if(user && user.app_metadata && user.app_metadata.roles) {
