@@ -65,7 +65,7 @@ class IndexComponent extends Component {
     }
     return (
       <div>
-        <h2>Points</h2>
+        <h2>Current Points</h2>
         {eventListItems}
       </div>
     );
