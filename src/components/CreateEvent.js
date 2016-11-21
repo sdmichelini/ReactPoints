@@ -5,6 +5,11 @@ import EventStore from '../stores/EventStore';
 import { browserHistory } from 'react-router';
 
 const COMMON_EVENTS = [
+  //Name
+  //pFor - Points for Attendence
+  //pAgainst - Points deducted for missing event
+  //required
+  {name: 'None', pFor: 0, pAgainst: 0, required: false},
   {name: 'Work Party', pFor: 3, pAgainst: 3, required: true},
   {name: 'House Jobs', pFor: 3, pAgainst: 3, required: true},
   {name: 'Wash/Wait-On', pFor: 3, pAgainst: 3, required: true},
@@ -36,7 +41,8 @@ class CreateEventComponent extends Component {
       pFor: 0,
       pAgainst: 0,
       required: false,
-      date: (dateString)
+      date: (dateString),
+      currentSelect: '0'
     };
     this.handleNameChange = this.handleNameChange.bind(this);
     this.handlePointForChange = this.handlePointForChange.bind(this);
@@ -45,6 +51,7 @@ class CreateEventComponent extends Component {
     this.handleDateChange = this.handleDateChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleEventUpdate = this.handleEventUpdate.bind(this);
+    this.onChangeSelect = this.onChangeSelect.bind(this);
   }
 
   componentWillMount() {
@@ -98,15 +105,37 @@ class CreateEventComponent extends Component {
     };
     EventActions.createEvent(_event);
   }
+  //When the event template changes
+  onChangeSelect(e) {
+    let _event = COMMON_EVENTS[Number(e.target.value)];
+    this.setState({
+      currentSelect: e.target.value,
+      pFor: _event.pFor,
+      pAgainst: _event.pAgainst,
+      required: _event.required,
+      name: (_event.name != 'None') ? _event.name : ''
+    });
+  }
+
   render() {
     let name = this.state.name || '';
     let pFor = this.state.pFor || 0;
     let pAgainst = this.state.pAgainst || 0;
     let date = this.state.date;
+    let event_options = COMMON_EVENTS.map( (_event, i) => (
+      <option value={i}>
+        {_event.name}
+      </option>));
     return (
       <div>
         <h1>Create New Event</h1>
         <h3>{name}</h3>
+        <div className='form-group'>
+          <label htmlFor='sel1'>Use Event Template: </label>
+          <select className='form-control' id='sel1' value={this.state.currentSelect} onChange={this.onChangeSelect}>
+            {event_options}
+          </select>
+        </div>
         <form onSubmit={this.handleSubmit}>
           <div className='form-group'>
             <label htmlFor='eventName'>Event Name</label>

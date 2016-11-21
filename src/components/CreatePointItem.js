@@ -113,15 +113,15 @@ class CreatePointItemComponent extends Component {
         <h1>Create Point Item</h1>
         <form onSubmit={this.onSubmit}>
           <h3>Event</h3>
-          <div className="form-group">
-            <label htmlFor="sel1">Event list:</label>
-            <select className="form-control" id="sel1" value={this.state.currentSelect} onChange={this.onChangeSelect}>
+          <div className='form-group'>
+            <label htmlFor='sel1'>Event list:</label>
+            <select className='form-control' id='sel1' value={this.state.currentSelect} onChange={this.onChangeSelect}>
               {eventSelectItems}
             </select>
           </div>
-          <div className="form-check">
-            <label className="form-check-label">
-              <input className="form-check-input" type="checkbox" checked={this.state.customPoint} onChange={this.onToggle}/> Custom?
+          <div className='form-check'>
+            <label className='form-check-label'>
+              <input className='form-check-input' type='checkbox' checked={this.state.customPoint} onChange={this.onToggle}/> Custom?
             </label>
           </div>
           <h3>Users</h3>
