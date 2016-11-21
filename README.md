@@ -14,7 +14,14 @@ A point item is directly linked to an event and is the amount of points a person
 
 ## To-Do ##
 
-- [x] Make new event auto redirect to event creation
-- [ ] Make variable point creation
 - [ ] Caching(HTTP and Database)
-- [ ] Start looking at Heroku
+- [ ] Backend Testing
+- [ ] Handle Errors Better
+
+## Running Locally ##
+
+1. Clone the repository
+2. Install npm dependencies using `npm install`
+3. Run the backend server using `npm start`
+  - Note: This will fail if it can't connect to MongoDB
+4. Run the webpack server for live-reload using `npm run serve`
