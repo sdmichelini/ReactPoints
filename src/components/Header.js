@@ -56,6 +56,7 @@ class HeaderComponent extends Component {
           <NavItem onClick={this.logout}>Logout</NavItem>
           <li role='presentation'><Link to={'/events'}>Events</Link></li>
           <li role='presentation'><Link to={'/dashboard'}>Dashboard</Link></li>
+          <li role='presentation'><Link to={'/settings'}>User Settings</Link></li>
         </Nav>
       );
     } else if(this.state.authenticated) {
@@ -63,6 +64,7 @@ class HeaderComponent extends Component {
         <Nav>
           <NavItem onClick={this.logout} eventKey={1}>Logout</NavItem>
           <li role='presentation'><Link to={'/events'}>Events</Link></li>
+          <li role='presentation'><Link to={'/settings'}>Settings</Link></li>
         </Nav>
       );
     } else {
