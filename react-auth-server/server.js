@@ -13,8 +13,10 @@ const ObjectId = require('mongodb').ObjectID;
 
 let port = process.env.PORT || 3001;
 
+//FEATURE FLAGS
 const USE_MEMCACHE = (process.env.ENVIRONMENT != 'prod');
 
+//The cache configuration is only populated if the USE_MEMCACHE feature flag is enabled
 let cache_config = {};
 
 const path = require('path');
@@ -79,7 +81,7 @@ function calculatePointTotals() {
         if(err) {
           console.log('Memcahed Set Error');
         }
-      }, 86400);
+      }, cache_config.cache_time);
     }
   });
 }
@@ -106,7 +108,10 @@ function calculatePoints(use_cache) {
   }
 }
 
-app.get('/api/events', (req, res) => {
+//EVENTS FUNCTION
+
+//Fetch Events from MongoDB
+let events_db_fetch = (res, cb) => {
   events_collection.find().toArray((err, events) => {
     if (err) {
       res.status(500);
@@ -117,7 +122,45 @@ app.get('/api/events', (req, res) => {
       return { id: event._id, name: event.name, type: event.type, required: event.required, when: event.when, points_present: event.points_present, points_missed: event.points_missed}
     });
     res.json(allEvents);
+    cb(allEvents);
   });
+}
+
+app.get('/api/events', (req, res) => {
+  if(USE_MEMCACHE) {
+    //If we need to update the cache do it
+    if(cache_config.need_events_update) {
+      events_db_fetch(res, (events) => {
+        cache_config.mc.set('events',JSON.stringify(events), (err, val) => {
+          if(err) {
+            console.log('Event Cache Set Error.');
+          } else {
+            cache_config.need_events_update = false;
+          }
+        }, cache_config.cache_time);
+      });
+      //Grab the latest cache
+    } else {
+      cache_config.mc.get('events', (err, val) => {
+        if(err || !val) {
+          if(err) {
+            console.log('Cache Error w/ Events Get');
+          } else {
+            console.log('Cache Miss w/ Events Get');
+          }
+          events_db_fetch(res, (events) => {
+            console.log('MongoDB Events GET');
+          });
+        } else {
+          res.json(JSON.parse(val));
+        }
+      });
+    }
+  } else {
+    events_db_fetch(res, (events) => {
+      console.log('MongoDB Events GET');
+    });
+  }
 });
 
 app.get('/api/events/:id', authCheck, (req, res) => {
@@ -174,6 +217,9 @@ app.post('/api/events', authCheck, checkAdmin, jsonParser, (req, res) => {
       res.status(201);//HTTP Created
       let event_result = {id: result.ops[0]._id, name: event_.name, type: event_.type, required: event_.required, when: event_.when,points_present: event_.points_present, points_missed: event_.points_missed};
       res.json({message:'Success.', _event: event_result});
+      if(USE_MEMCACHE) {
+        cache_config.need_events_update = true;
+      }
     });
 
   }
@@ -334,6 +380,7 @@ if(USE_MEMCACHE) {
   cache_config.mc = cache_config.memjs.Client.create();
   cache_config.need_events_update = false;
   cache_config.need_points_update = false;
+  cache_config.cache_time = 86400;
 }
 
 MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
