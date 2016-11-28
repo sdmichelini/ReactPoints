@@ -150,6 +150,15 @@ app.get('/api/events', (req, res) => {
           }
           events_db_fetch(res, (events) => {
             console.log('MongoDB Events GET');
+            if(!err) {
+              cache_config.mc.set('events',JSON.stringify(events), (err, val) => {
+                if(err) {
+                  console.log('Event Cache Set Error.');
+                } else {
+                  cache_config.need_events_update = false;
+                }
+              }, cache_config.cache_time);
+            }
           });
         } else {
           res.json(JSON.parse(val));
