@@ -13,6 +13,10 @@ const ObjectId = require('mongodb').ObjectID;
 
 let port = process.env.PORT || 3001;
 
+const USE_MEMCACHE = (process.env.ENVIRONMENT != 'prod');
+
+let cache_config = {};
+
 const path = require('path');
 app.use('/assets', express.static(path.join(__dirname, 'dist/assets')));
 
@@ -56,10 +60,8 @@ function checkAdmin(req, res, next) {
   }
 
 }
-/*
-  Update the points cache from all_point_items
-*/
-function calculatePoints() {
+
+function calculatePointTotals() {
   let pointTotals = {};
   points_collection.find().toArray((err, items) => {
     for(let item of items) {
@@ -71,8 +73,37 @@ function calculatePoints() {
         pointTotals[item.user_id].name = item.name;
       }
     }
+    totals = pointTotals;
+    if(USE_MEMCACHE) {
+      cache_config.mc.set('totals', JSON.stringify(pointTotals), (err, val) => {
+        if(err) {
+          console.log('Memcahed Set Error');
+        }
+      }, 86400);
+    }
   });
-  totals = pointTotals;
+}
+/*
+  Update the points cache from all_point_items
+*/
+function calculatePoints(use_cache) {
+  let pointTotals = {};
+
+  if(use_cache && USE_MEMCACHE) {
+    cache_config.mc.get('totals', (err, val)=> {
+      if(err) {
+        console.log('Unable to Retreive Points Cache.');
+        calculatePointTotals();
+      } else if(!val) {
+        console.log('Cache Miss.');
+        calculatePointTotals();
+      } else {
+        totals = JSON.parse(val);
+      }
+    });
+  } else {
+    calculatePointTotals();
+  }
 }
 
 app.get('/api/events', (req, res) => {
@@ -241,7 +272,7 @@ app.put('/api/points/:id', authCheck, checkAdmin, jsonParser, (req, res) => {
       } else {
         res.status(200);
         res.json({message:'Update Successful.'});
-        calculatePoints();
+        calculatePoints(false);
       }
     });
   }
@@ -262,7 +293,7 @@ app.delete('/api/points/:id', authCheck, checkAdmin, jsonParser, (req, res) => {
       } else {
         res.status(200);
         res.json({message:'Delete Successful.'});
-        calculatePoints();
+        calculatePoints(false);
       }
     });
   }
@@ -297,6 +328,14 @@ app.get('/api/auth', authCheck, checkAdmin, (req, res) => {
 
 app.use('*', express.static(path.join(__dirname, 'dist')));
 
+//Set up memcached only if use memcache is allowed
+if(USE_MEMCACHE) {
+  cache_config.memjs = require('memjs');
+  cache_config.mc = cache_config.memjs.Client.create();
+  cache_config.need_events_update = false;
+  cache_config.need_points_update = false;
+}
+
 MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
   if(err){
     console.log('MongoDB Error:');
@@ -305,7 +344,7 @@ MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
   db = database;
   points_collection = db.collection('points');
   events_collection = db.collection('events');
-  calculatePoints();
+  calculatePoints(true);
   app.listen(port);
   console.log('Listening on http://localhost:3001');
 });
