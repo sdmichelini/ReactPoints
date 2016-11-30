@@ -68,8 +68,19 @@ class CreatePointItemComponent extends Component {
   }
 
   onChangeUsers() {
+    let new_users = UserStore.getUsersSelection();
+    new_users.sort((a,b)=>{
+      if (a.name.toLowerCase() > b.name.toLowerCase()) {
+        return 1;
+      }
+      if (a.name.toLowerCase()  < b.name.toLowerCase()) {
+        return -1;
+      }
+      // a must be equal to b
+      return 0;
+    });
     this.setState({
-      users: UserStore.getUsersSelection()
+      users: new_users
     });
   }
 
