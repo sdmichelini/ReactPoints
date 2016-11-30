@@ -12,7 +12,13 @@ function setUsers(users) {
   _users = users;
   _users_selection = [];
   for(let user of users) {
-      _users_selection.push({name: user.name,id: user.user_id,selection: 3, points: 0});
+      let name;
+      if(user.user_metadata && user.user_metadata.name) {
+        name = user.user_metadata.name;
+      } else {
+        name = user.name;
+      }
+      _users_selection.push({name: name,id: user.user_id,selection: 3, points: 0});
     }
 }
 
@@ -153,6 +159,28 @@ UserStore.dispatchToken = AppDispatcher.register(action => {
         }
       }
       setUsersSelection(users_selection2);
+      UserStore.emitChange();
+      break
+    case UserConstants.UPDATE_USER_NAME:
+
+      let user_id2 = action.user_id;
+      let users2 = _full_users;
+      for(let i = 0; i < users2.length; i++) {
+        if(user_id2 === users2[i].user_id) {
+          if(!users2[i].user_metadata) {
+            users2[i].user_metadata = {};
+          }
+          users2[i].user_metadata.name = action.name;
+          if(!users2[i].is_changed) {
+            users2[i].is_changed = true;
+          } else {
+            users2[i].is_changed = false;
+          }
+          break;
+        }
+      }
+      console.log(users2);
+      setUsers(users2);
       UserStore.emitChange();
       break
 

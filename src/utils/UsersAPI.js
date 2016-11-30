@@ -25,7 +25,7 @@ export default {
         })
     });
   },
-  updateUser: (url, user_id, roles, token) => {
+  updateUser: (url, user_id, roles, token, user_metadata) => {
     return new Promise((resolve, reject) => {
       request
         .patch(url+'/'+user_id)
@@ -33,7 +33,8 @@ export default {
         .send({
           app_metadata: {
             roles: roles
-          }
+          },
+          user_metadata: user_metadata
         })
         .set('Authorization', 'Bearer ' + token)
         .end((err, response) => {

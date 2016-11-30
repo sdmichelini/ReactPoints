@@ -42,13 +42,21 @@ export default {
     });
   },
 
+  editUserName: (user_id, name) => {
+    AppDispatcher.dispatch({
+      actionType: UserConstants.UPDATE_USER_NAME,
+      user_id: user_id,
+      name: name
+    });
+  },
+
   updateUsersStatus: (users) => {
     UsersAPI
       .getToken(AUTH_URL)
       .then(response => {
         for(let user of users) {
           if(user.is_changed) {
-            UsersAPI.updateUser('https://tkezm.auth0.com/api/v2/users', user.user_id, user.app_metadata.roles,response.token)
+            UsersAPI.updateUser('https://tkezm.auth0.com/api/v2/users', user.user_id, user.app_metadata.roles,response.token, user.user_metadata||{})
             .then(response => {
               AppDispatcher.dispatch({
                 actionType: UserConstants.SUBMIT_USERS_STATUS,
@@ -72,11 +80,11 @@ export default {
       });
   },
 
-  updateUserStatus: (user_id, roles) => {
+  updateUserStatus: (user_id, roles, user_metadata) => {
     UsersAPI
       .getToken(AUTH_URL)
       .then(response => {
-        UsersAPI.updateUser('https://tkezm.auth0.com/api/v2/users', user_id, roles,response.token)
+        UsersAPI.updateUser('https://tkezm.auth0.com/api/v2/users', user_id, roles,response.token, user_metadata)
         .then(users => {
           AppDispatcher.dispatch({
             actionType: UserConstants.SUBMIT_USERS_STATUS,
