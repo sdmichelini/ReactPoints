@@ -241,6 +241,10 @@ app.post('/api/events', authCheck, checkAdmin, jsonParser, (req, res) => {
   }
 });
 
+app.delete('/api/events/:id', authCheck, checkAdmin, jsonParser, (req, res) => {
+
+});
+
 app.get('/api/points', (req, res)=> {
   res.json({ points: totals, message:"Success!" });
 });
