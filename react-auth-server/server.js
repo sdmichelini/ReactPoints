@@ -241,8 +241,34 @@ app.post('/api/events', authCheck, checkAdmin, jsonParser, (req, res) => {
   }
 });
 
-app.delete('/api/events/:id', authCheck, checkAdmin, jsonParser, (req, res) => {
-
+app.delete('/api/events/:id', authCheck, checkAdmin, (req, res) => {
+  if(USE_MEMCACHE) {
+    cache_config.need_events_update = true;
+  }
+  if(!req.params.id || (req.params.id.length != 24)) {
+    res.status(400);
+    res.json({message: 'Invalid Event Item ID.'});
+    return console.log('Invalid Event Item ID.');
+  } else {
+    let obj_id = new ObjectId(req.params.id);
+    //Drop all the points w/ event id
+    points_collection.deleteMany({'_event.id':obj_id}, (err, result) => {
+      if(err) {
+        res.status(500);
+        res.json({message:'Internal Server Error.'});
+      } else {
+        events_collection.deleteOne({'_id':obj_id}, (err, result) => {
+          if(err) {
+            res.status(500);
+            res.json({message:'Internal Server Error.'});
+          } else {
+            res.status(200);
+            res.json({message:'Deleted Event.'});
+          }
+        });
+      }
+    });
+  }
 });
 
 app.get('/api/points', (req, res)=> {
