@@ -36,6 +36,16 @@ class EventDetailComponent extends Component {
     });
   }
 
+  deleteEvent() {
+    let result = confirm('Are you sure you want to delete: '+this.state.event.name+'?');
+    if(result == true) {
+      EventActions.deleteEvent(this.state.event.id);
+      this.setState({
+        event: {name:'Deleted', when: 'Derek J. Back At It'}
+      });
+    }
+  }
+
   render() {
     let event;
     if (this.state.event) {
@@ -49,6 +59,7 @@ class EventDetailComponent extends Component {
             <h3>Date: {event.when}</h3>
           </div>
         }
+        <button className='btn btn-danger' onClick={this.deleteEvent.bind(this)}>Delete Event</button>
       </div>
     );
   }

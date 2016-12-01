@@ -53,5 +53,18 @@ export default {
           resolve(JSON.parse(response.text));
         })
     });
+  },
+
+  deleteEvent: (url) => {
+    return new Promise((resolve, reject) => {
+      request
+        .delete(url)
+        .type('json')
+        .set('Authorization', 'Bearer ' + AuthStore.getJwt())
+        .end((err, response) => {
+          if (err) reject(err);
+          resolve(JSON.parse(response.text));
+        })
+    });
   }
 }

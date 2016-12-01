@@ -264,6 +264,7 @@ app.delete('/api/events/:id', authCheck, checkAdmin, (req, res) => {
           } else {
             res.status(200);
             res.json({message:'Deleted Event.'});
+            calculatePoints(false);
           }
         });
       }

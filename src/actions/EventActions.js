@@ -83,7 +83,25 @@ export default {
           });
         });
     }
+  },
 
+  deleteEvent: (id) => {
+    EventsAPI
+      .deleteEvent(URL+'/api/events/'+id)
+      .then(response => {
+        AppDispatcher.dispatch({
+          actionType: EventConstants.DELETE_EVENT_SUCCESS,
+          id: id
+        });
+      })
+      .catch(message => {
+        AppDispatcher.dispatch({
+          actionType: EventConstants.DELETE_EVENT_ERROR,
+          message: message
+        });
+      });
   }
+
+
 
 }
