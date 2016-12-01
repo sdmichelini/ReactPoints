@@ -66,13 +66,20 @@ function checkAdmin(req, res, next) {
 function calculatePointTotals() {
   let pointTotals = {};
   points_collection.find().toArray((err, items) => {
+    let name_date;
     for(let item of items) {
       if(pointTotals[item.user_id]) {
         pointTotals[item.user_id].points = pointTotals[item.user_id].points + item.points;
+        //Newest Date Should Have Name
+        if(item._id.getTimestamp() > name_date) {
+          name_date = item._id.getTimestamp();
+          pointTotals[item.user_id].name = item.name;
+        }
       } else {
         pointTotals[item.user_id] = {};
         pointTotals[item.user_id].points = item.points;
         pointTotals[item.user_id].name = item.name;
+        name_date = item._id.getTimestamp();
       }
     }
     totals = pointTotals;
