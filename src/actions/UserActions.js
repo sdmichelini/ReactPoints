@@ -12,7 +12,7 @@ export default {
     UsersAPI
       .getToken(AUTH_URL)
       .then(response => {
-        UsersAPI.getUsers('https://tkezm.auth0.com/api/v2/users',response.token)
+        UsersAPI.getUsers('https://tkezm.auth0.com/api/v2/users?per_page=100',response.token)
         .then(users => {
           AppDispatcher.dispatch({
             actionType: UserConstants.RECIEVE_USERS,
