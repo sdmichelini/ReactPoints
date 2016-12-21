@@ -312,6 +312,8 @@ app.post('/api/points', authCheck, checkAdmin, jsonParser, (req, res) => {
             case 4:
               points = user.points || 0;
               break
+            case 5:
+              points = user.points || 0;
             default:
               need_push = false;
               points = 0;
