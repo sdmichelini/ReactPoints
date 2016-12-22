@@ -10,8 +10,8 @@ const COMMON_EVENTS = [
   //pAgainst - Points deducted for missing event
   //required
   {name: 'None', pFor: 0, pAgainst: 0, required: false},
-  {name: 'Work Party', pFor: 3, pAgainst: 3, required: true},
-  {name: 'House Jobs', pFor: 5, pAgainst: 5, required: true},
+  {name: 'Work Party', pFor: 5, pAgainst: 5, required: true},
+  {name: 'House Jobs', pFor: 3, pAgainst: 3, required: true},
   {name: 'Wash/Wait-On', pFor: 3, pAgainst: 3, required: true},
   {name: 'House Meeting', pFor: 5, pAgainst: 5, required: true},
   {name: 'Ritual Meeting', pFor: 10, pAgainst: 5, required: true},
